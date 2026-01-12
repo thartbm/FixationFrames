@@ -579,11 +579,11 @@ def getTasks(cfg):
                          {'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':14, 'label':'w 14, a 20'},
 
 
-                         {'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':7, 'label':'w 7, a 20\nfo 0'},
+                        #  {'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':7, 'label':'w 7, a 20\nfo 0'},
                          {'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':2, 'framewidth':7, 'label':'w 7, a 20\nfo 4'},
                          {'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':4, 'framewidth':7, 'label':'w 7, a 20\nfo 8'},
                          {'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':6, 'framewidth':7, 'label':'w 7, a 20\nfo 12'},
-
+                         {'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':8, 'framewidth':7, 'label':'w 7, a 20\nfo 16'},
 
 
 
@@ -596,7 +596,7 @@ def getTasks(cfg):
 
                          ]
 
-        return( dictToBlockTrials(cfg=cfg, condictionary=condictionary, nblocks=5, nrepetitions=2, shuffle=True) )
+        return( dictToBlockTrials(cfg=cfg, condictionary=condictionary, nblocks=4, nrepetitions=2, shuffle=True) )
         # return( dictToBlockTrials(cfg=cfg, condictionary=condictionary, nblocks=1, nrepetitions=1, shuffle=False) )
 
 
