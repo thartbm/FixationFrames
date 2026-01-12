@@ -924,7 +924,7 @@ def dictToBlockTrials(cfg, condictionary, nblocks, nrepetitions, shuffle=True):
 
 def saveCfg(cfg):
 
-    scfg = copy.copy(cfg)
+    scfg = copy.deepcopy(cfg)
     del scfg['hw']
 
     # print(cfg['datadir'])
