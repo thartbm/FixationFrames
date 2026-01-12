@@ -209,3 +209,4 @@ __marimo__/
 
 # my own added rules:
 *.mp4
+.Rproj.user
