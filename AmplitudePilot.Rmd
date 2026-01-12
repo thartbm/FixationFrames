@@ -1,0 +1,184 @@
+---
+title: "Untitled"
+author: "Marius 't Hart"
+date: "2026-01-08"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Load my data:
+
+```{r}
+df <- read.csv("data/amplitude/exp_1/marius/responses.csv", stringsAsFactors = FALSE)
+# df$percept <- df$percept_scl * df$xfactor
+df$percept <- df$percept_abs * 2 * df$xfactor
+```
+
+we want several plots:
+
+1. percept by framewidth (0.5, 7, 14: 3 lines/colors?) and amplitude (4, 8, 12, 16, 20: x-axis)
+
+2. percept for amplitude 20 framewidth 7... for several frameoffsets (0, 2, 4, 6, 8)
+
+first plot:
+
+```{r fig.width=8, fig.height=4}
+df1 <- df[which(df$frameoffset == 0), ]
+
+plot(NULL,NULL,
+     xlim=c(2, 22), ylim=c(0,13),
+     xlab="amplitude",ylab="percept",
+     ax=F,bty='n')
+
+for (framewidth in c(0.5, 7, 14)) {
+  
+  fwdf <- df1[which(df1$framewidth == framewidth), ]
+  
+  avg <- aggregate(percept ~ amplitude, data = fwdf, FUN = mean)
+  CI  <- aggregate(percept ~ amplitude, data = fwdf, FUN = Reach::getConfidenceInterval, method='b')
+  
+  # print(avg)
+  # print(CI$percept)
+  
+  color = list('0.5'='orange', '7'='red', '14'='purple')[[as.character(framewidth)]]
+  polygon(c(avg$amplitude, rev(avg$amplitude)),
+          c(CI$percept[,1], rev(CI$percept[,2])),
+          col=adjustcolor(color, alpha.f=0.2), border=NA)
+  lines(avg$amplitude, avg$percept, type='b', lwd=2, col=color)
+  
+}
+
+axis(side=1, at=c(4, 8, 12, 16, 20))
+axis(side=2, at=c(0, 4, 8, 12))
+
+legend( x=2, y=13,
+        legend=c("framewidth 0.5", "framewidth 7", "framewidth 14"),
+        col=c('orange', 'red', 'purple'),
+        lwd=2, bty='n' )
+
+```
+
+now what happens with the framewidth 7 dva frame at 20 dva amplitude when we vary the fixation offset?
+
+```{r fig.width=8, fig.height=4}
+df2 <- df[which(df$amplitude == 20 & df$framewidth == 7), ]
+plot(NULL,NULL,
+     xlim=c(-1, 17), ylim=c(0,13),
+     xlab="fixation offset",ylab="percept",
+     ax=F,bty='n')
+df2$fixoffset <- 2* df2$frameoffset
+avg <- aggregate(percept ~ fixoffset, data = df2, FUN = mean)
+CI  <- aggregate(percept ~ fixoffset, data = df2, FUN = Reach::getConfidenceInterval, method='b')
+
+polygon(c(avg$fixoffset, rev(avg$fixoffset)),
+        c(CI$percept[,1], rev(CI$percept[,2])),
+        col=adjustcolor('blue', alpha.f=0.2), border=NA)
+lines(avg$fixoffset, avg$percept, type='b', lwd=2, col='blue')
+
+axis(side=1, at=c(0, 4, 8, 12, 16))
+axis(side=2, at=c(0, 4, 8, 12))
+```
+
+test of inner frame size:
+
+```{r}
+df <- read.csv("data/amplitude/exp_3/marius/responses.csv", stringsAsFactors = FALSE)
+# df$percept <- df$percept_scl * df$xfactor
+df$percept <- df$percept_abs * 2 * df$xfactor
+
+plot(NULL,NULL,
+     xlim=c(3, 29), ylim=c(0,4),
+     xlab="frame width",ylab="percept",
+     ax=F,bty='n')
+# df$fixoffset <- 2* df2$frameoffset
+
+lines(x=c(4,28), y=c(4,4), lty=2, col='gray')
+
+df1 <- df[which(df$framewidth == 28), ]
+avg <- aggregate(percept ~ innerwidth, data = df1, FUN = mean)
+CI  <- aggregate(percept ~ innerwidth, data = df1, FUN = Reach::getConfidenceInterval, method='b')
+
+polygon(c(avg$innerwidth, rev(avg$innerwidth)),
+        c(CI$percept[,1], rev(CI$percept[,2])),
+        col=adjustcolor('blue', alpha.f=0.2), border=NA)
+lines(avg$innerwidth, avg$percept, type='b', lwd=2, col='blue')
+
+df2 <- df[which(df$innerwidth == 4), ]
+avg <- aggregate(percept ~ framewidth, data = df2, FUN = mean)
+CI  <- aggregate(percept ~ framewidth, data = df2, FUN = Reach::getConfidenceInterval, method='b')
+polygon(c(avg$framewidth, rev(avg$framewidth)),
+        c(CI$percept[,1], rev(CI$percept[,2])),
+        col=adjustcolor('red', alpha.f=0.2), border=NA)
+lines(avg$framewidth, avg$percept, type='b', lwd=2, col='red')
+
+axis(side=1, at=c(4, 8, 12, 16, 20, 24, 28))
+axis(side=2, at=c(0, 2, 4))
+
+legend(2,1.5,legend=c('inner (outer = 28)', 'outer (inner = 4)'),
+       col=c('blue', 'red'), lwd=2, bty='n')
+
+```
+what about combined frames? where a small inner frame (4 dva) and a larger outer frame (13 dva) are both present and move independently....
+
+first check their effects without the other:
+
+```{r fig.width=8, fig.height=4}
+df <- read.csv("data/wireframes//exp_1/marius/responses.csv", stringsAsFactors = FALSE)
+df$percept <- df$percept_abs * 2 * df$xfactor
+sidf <- df[which(is.na(df$outersize)),]
+sodf <- df[which(is.na(df$innersize)),]
+bdf <- df[which(!is.na(df$innersize) & !is.na(df$outersize)),]
+idf <- bdf[which(bdf$outeramplitude == 4), ]
+odf <- bdf[which(bdf$inneramplitude == 4), ]
+layout(matrix(c(1,2), nrow=1, ncol=2), widths=c(1,1))
+
+plot(NULL,NULL,
+     xlim=c(0,4), ylim=c(0,4),
+     xlab='amplitude', ylab='percept',
+     ax=F,bty='n')
+lines(x=c(0,4), y=c(0,4), lty=2, col='gray')
+avg <- aggregate(percept ~ inneramplitude, data = sidf, FUN = mean)
+CI  <- aggregate(percept ~ inneramplitude, data = sidf, FUN = Reach::getConfidenceInterval, method='b')
+polygon(c(avg$inneramplitude, rev(avg$inneramplitude)),
+        c(CI$percept[,1], rev(CI$percept[,2])),
+        col=adjustcolor('blue', alpha.f=0.2), border=NA)
+lines(avg$inneramplitude, avg$percept, type='b', lwd=2, col='blue')
+avg <- aggregate(percept ~ outeramplitude, data = sodf, FUN = mean)
+CI  <- aggregate(percept ~ outeramplitude, data = sodf, FUN = Reach::getConfidenceInterval, method='b')
+polygon(c(avg$outeramplitude, rev(avg$outeramplitude)),
+        c(CI$percept[,1], rev(CI$percept[,2])),
+        col=adjustcolor('red', alpha.f=0.2), border=NA)
+lines(avg$outeramplitude, avg$percept, type='b', lwd=2, col='red')
+axis(side=1, at=c(0,1,2,3,4))
+axis(side=2, at=c(0,1,2,3,4))
+legend(0.5,4.5,legend=c('small', 'large'),
+       col=c('blue', 'red'), lwd=2, bty='n', xpd=TRUE)
+
+plot(NULL,NULL,
+     xlim=c(-4,4), ylim=c(-4,4),
+     xlab='amplitude', ylab='percept',
+     ax=F,bty='n')
+
+lines(x=c(-4,4), y=c(-4,4), lty=2, col='gray')
+avg <- aggregate(percept ~ inneramplitude, data = idf, FUN = mean)
+CI  <- aggregate(percept ~ inneramplitude, data = idf, FUN = Reach::getConfidenceInterval, method='b')
+polygon(c(avg$inneramplitude, rev(avg$inneramplitude)),
+        c(CI$percept[,1], rev(CI$percept[,2])),
+        col=adjustcolor('blue', alpha.f=0.2), border=NA)
+lines(avg$inneramplitude, avg$percept, type='b', lwd=2, col='blue')
+avg <- aggregate(percept ~ outeramplitude, data = odf, FUN = mean)
+CI  <- aggregate(percept ~ outeramplitude, data = odf, FUN = Reach::getConfidenceInterval, method='b')
+polygon(c(avg$outeramplitude, rev(avg$outeramplitude)),
+        c(CI$percept[,1], rev(CI$percept[,2])),
+        col=adjustcolor('red', alpha.f=0.2), border=NA)
+lines(avg$outeramplitude, avg$percept, type='b', lwd=2, col='red')
+axis(side=1, at=c(-4,-2,0,2,4))
+axis(side=2, at=c(-4,-2,0,2,4))
+legend(0,-1,legend=c('small varied', 'large varied'),
+       col=c('blue', 'red'), lwd=2, bty='n', xpd=TRUE)
+
+```
+

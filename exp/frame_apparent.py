@@ -982,19 +982,19 @@ def getParticipant(cfg, ID=np.nan, check_path=True):
 
     # set up folder's for groups and participants to store the data
     if check_path:
-        for thisPath in ['../data', '../data/apparent' '../data/apparent/exp_%d'%(cfg['expno']), '../data/apparent/exp_%d/p%03d'%(cfg['expno'],cfg['ID'])]:
+        for thisPath in ['../data', '../data/apparent' '../data/apparent/exp_%d'%(cfg['expno']), '../data/apparent/exp_%d/%s'%(cfg['expno'],cfg['ID'])]:
             if os.path.exists(thisPath):
                 if not(os.path.isdir(thisPath)):
-                    os.makedirs
+                    # os.makedirs
                     sys.exit('"%s" should be a folder'%(thisPath))
                 else:
                     # if participant folder exists, don't overwrite existing data?
-                    if (thisPath == '../data/apparent/exp_%d/p%03d'%(cfg['expno'],cfg['ID'])):
+                    if (thisPath == '../data/apparent/exp_%d/%s'%(cfg['expno'],cfg['ID'])):
                         sys.exit('participant already exists (crash recovery not implemented)')
             else:
                 os.mkdir(thisPath)
 
-        cfg['datadir'] = '../data/apparent/exp_%d/p%03d/'%(cfg['expno'],cfg['ID'])
+        cfg['datadir'] = '../data/apparent/exp_%d/%s/'%(cfg['expno'],cfg['ID'])
 
     # we need to seed the random number generator:
     random.seed(99999 * IDno)
@@ -1220,3 +1220,4 @@ def foldout(a):
 print(sys.argv)
 
 run_exp(expno=int(sys.argv[1]), setup='tablet', ID=int(sys.argv[2]))
+self.colors['back']

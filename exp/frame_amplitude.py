@@ -7,18 +7,17 @@ from psychopy.hardware import keyboard
 # altenative keyboard read-out?
 from pyglet.window import key
 
-#To get psychtoolbox working for keyboard use you need the following steps to raise the priority of the experiment process. The idea is that to give you permission to do this without using super-user permissions to run your study (which would be bad for security) you need to add yourself to a group (e.g create a psychopy group) and then give that group permission to raise the priority of our process without being su:
 
-#sudo groupadd --force psychopy
-#sudo usermod -a -G psychopy $USER
+# calibration / eyetracking imports ----
+sys.path.append(os.path.join('..', 'EyeTracking'))
+from EyeTracking import EyeTracker
+import math
+import time
+from glob import glob
 
-#then do sudo nano /etc/security/limits.d/99-psychopylimits.conf and copy/paste in the following text to that file:
-
-#@psychopy   -  nice       -20
-#@psychopy   -  rtprio     50
-#@psychopy   -  memlock    unlimited
-
-
+from psychopy import gui, data
+from psychopy.tools.coordinatetools import pol2cart, cart2pol
+# ----
 
 
 
@@ -26,7 +25,9 @@ from pyglet.window import key
 def doTrial(cfg):
 
     trialtype = cfg['blocks'][cfg['currentblock']]['trialtypes'][cfg['currenttrial']]
-    trialdict = cfg['conditions'][trialtype]
+    # trialdict = cfg['conditions'][trialtype]
+    trialdict = copy.deepcopy(cfg['conditions'][trialtype])
+
 
     if 'record_timing' in trialdict.keys():
         record_timing = trialdict['record_timing']
@@ -48,7 +49,41 @@ def doTrial(cfg):
         label = trialdict['label']
     else:
         label = ''
+    # label = ''
 
+    # cfg['hw']['text'].text = label
+
+    if trialdict['stimtype'] == 'classicframe':
+        frame = cfg['hw']['frame']
+    
+    if trialdict['stimtype'] == 'barframe':
+
+        innerheight = 6
+        framewidth = trialdict['framewidth'] # this NEEDS to be set for barframes!
+        outersize = [framewidth,7]
+        innerwidth = trialdict['innerwidth']
+
+        frame = makeBarFrame(
+                                cfg=cfg, 
+                                innersize=[innerwidth,innerheight], 
+                                outersize=outersize,
+                                pos=[0,0], 
+                                col=[.4,.4,.4]
+                            )
+    
+        
+    # print(frame)
+
+    if 'framewidth' in trialdict.keys():
+        framewidth = trialdict['framewidth']
+        if trialdict['stimtype'] == 'classicframe':
+            frame.width = framewidth
+    else:
+        #framewidth = 7
+        pass
+        # NOT USED! (so far... so maybe just don't set it either)
+
+    # frame.size = [framewidth,7]
 
     # # change frequency and distance for static periods at the extremes:
     # if (0.35 - period) > 0:
@@ -115,14 +150,14 @@ def doTrial(cfg):
 
     if cfg['expno'] == 2:
         cfg['hw']['text'].text = label
-        cfg['hw']['text'].pos = [4,4]
+        cfg['hw']['text'].pos = [-10,8]
 
     # print('preparation done...')
 
     while waiting_for_response:
 
         if cfg['expno'] == 2:
-            if (time.time() > (trial_start_time + 3.25)):
+            if (time.time() > (trial_start_time + 4.75)):
                 reaction_time = 0
                 waiting_for_response = False
 
@@ -132,14 +167,14 @@ def doTrial(cfg):
             event.clearEvents(eventType='keyboard')
             cfg['hw']['win'].flip()
 
-        # on every frame:
+        # on every frame:'frametype'
+
         this_frame_time = time.time() - trial_start_time
         frame_time_elapsed = this_frame_time - previous_frame_time
         #print(round(1/frame_time_elapsed))
 
         # shorter variable for equations:
         t = this_frame_time
-
 
         # sawtooth, scaled from -0.5 to 0.5
         offsetX = abs( ( ((t/2) % p) - (p/2) ) * (2/p) ) - 0.5
@@ -162,18 +197,18 @@ def doTrial(cfg):
         if (abs(offsetX) >= (distance/2)):
             offsetX = np.sign(offsetX) * (distance/2)
 
-        # flip offset according to invert percepts:
+        # flip offset to (50%) invert percepts:
         offsetX = offsetX * xfactor
 
-        if cfg['expno'] == 2:
+        if cfg['expno'] in [2]:
             cfg['hw']['text'].draw()
+
+        cfg['hw']['fixdot'].draw()
 
         # show frame for the classic frame:
         frame_pos = [offsetX+stim_centre[0], stim_centre[1]]
-        cfg['hw']['frame'].pos = frame_pos
-        cfg['hw']['frame'].draw()
-
-        cfg['hw']['fixdot'].draw()
+        frame.pos = frame_pos
+        frame.draw()
 
         if flash_red:
             cfg['hw']['reddot'].draw()
@@ -260,12 +295,16 @@ def runTasks(cfg):
 
         showInstruction(cfg)
 
+        
+
         while cfg['currenttrial'] < len(cfg['blocks'][cfg['currentblock']]['trialtypes']):
+
+            print([cfg['currenttrial'], len(cfg['blocks'][cfg['currentblock']]['trialtypes'])])
 
             trialtype = cfg['blocks'][cfg['currentblock']]['trialtypes'][cfg['currenttrial']]
             trialdict = cfg['conditions'][trialtype]
 
-            if trialdict['stimtype'] in ['barframe','classicframe', 'timedframe']:
+            if trialdict['stimtype'] in ['barframe','classicframe']:
 
                 cfg = doTrial(cfg)
                 saveCfg(cfg)
@@ -326,6 +365,19 @@ def getStimuli(cfg, setup='tablet'):
     #                                        lineWidth=0,
     #                                        fillColor=[0,0,0])
 
+    cfg['hw']['barframes'] = {}
+    innerheight = 6
+    outersize = [28,7]
+    for innerwidth in [14, 10.5, 7, 3.5, 0.5]:
+        cfg['hw']['barframes'][str(innerwidth)] = makeBarFrame(
+                                                                cfg=cfg, 
+                                                                innersize=[innerwidth,innerheight], 
+                                                                outersize=outersize,
+                                                                pos=[0,0], 
+                                                                col=[.4,.4,.4]
+                                                              )
+    
+
     cfg['hw']['white_bar'] = visual.Rect(win = cfg['hw']['win'],
                                          width = 1,
                                          height = 7,
@@ -375,6 +427,95 @@ def getStimuli(cfg, setup='tablet'):
 
     return(cfg)
 
+# def makeMultiFrame(cfg, width=7, height=7, pos=[0,0], col=[1,1,1], units='deg'):
+
+#     xrange = list(np.linspace(0,width,parts*2))
+#     vertices=[]
+#     for part in range(parts):
+#         lx = xrange.pop(0) - (width/2)
+#         rx = xrange.pop(0) - (width/2)
+#         uy = height/2
+#         ly = height/-2
+#         vertices += [[[lx,uy],[rx,uy],[rx,ly],[lx,ly],[lx,uy]]]
+
+#     multiframe = visual.ShapeStim(  win=cfg['hw']['win'],
+#                                     units=units,
+#                                     pos=pos,
+#                                     colorSpace='rgb',
+#                                     lineColor=None,
+#                                     fillColor=col,
+#                                     vertices=vertices
+#                                     )
+
+#     return(multiframe)
+
+
+def makeBarFrame(cfg, innersize, outersize, pos=[0,0], col=[1,1,1], units='deg'):
+
+    
+
+    vertices = [
+                  [
+                    [-(outersize[0]/2), (outersize[1]/2)],
+                    [ (outersize[0]/2), (outersize[1]/2)],
+                    [ (outersize[0]/2),-(outersize[1]/2)],
+                    [-(outersize[0]/2),-(outersize[1]/2)],
+                    [-(outersize[0]/2), (outersize[1]/2)]
+                  ],
+                  [
+                    [-(innersize[0]/2), (innersize[1]/2)],
+                    [ (innersize[0]/2), (innersize[1]/2)],
+                    [ (innersize[0]/2),-(innersize[1]/2)],
+                    [-(innersize[0]/2),-(innersize[1]/2)],
+                    [-(innersize[0]/2), (innersize[1]/2)]
+                  ]
+               ]
+
+    barframe = visual.ShapeStim(  win=cfg['hw']['win'],
+                                    units=units,
+                                    pos=pos,
+                                    colorSpace='rgb',
+                                    lineColor=None,
+                                    fillColor=col,
+                                    vertices=vertices
+                                    )
+
+    return(barframe)
+
+
+
+def setupEyetracking(cfg):
+
+    # use LiveTrack to check fixation on both eyes:
+    # tracker = 'livetrack'
+    trackEyes = [True,True]
+
+    # do not store any files anywhere:
+    filefolder = None
+    filename = None
+
+    colors = {'back' : [ 0, 0, 0],
+              'both' : [-1,-1,-1]} # only for EyeLink
+    
+    ET = EyeTracker( tracker           = 'livetrack',
+                     trackEyes         = trackEyes,
+                     fixationWindow    = 2.0,
+                     minFixDur         = 0.2,
+                     fixTimeout        = 3.0,
+                     psychopyWindow    = cfg['hw']['win'],
+                     filefolder        = filefolder,
+                     filename          = filename,
+                     samplemode        = 'average',
+                     calibrationpoints = 5,
+                     colors            = colors ) # only for EyeLink
+
+    cfg['hw']['tracker'] = ET
+
+    return(cfg)
+
+    
+
+
 
 def getTasks(cfg):
 
@@ -388,36 +529,115 @@ def getTasks(cfg):
         # move whole frame leftward from fixation?
         condictionary = [
 
-                         {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'frameoffset':0},
-                         {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'frameoffset':8},
 
-                         {'period':1/3, 'amplitude':12, 'stimtype':'classicframe', 'frameoffset':0},
-                         {'period':1/3, 'amplitude':12, 'stimtype':'classicframe', 'frameoffset':8},
+                         {'period':1/3, 'amplitude':1, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':0.5, 'label':'w 0.5, a 1'},
+                         {'period':1/3, 'amplitude':2, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':0.5, 'label':'w 0.5, a 2'},
+                         {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':0.5, 'label':'w 0.5, a 4'},
+                         {'period':1/3, 'amplitude':8, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':0.5, 'label':'w 0.5, a 8'},
+                         {'period':1/3, 'amplitude':12, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':0.5, 'label':'w 0.5, a 12'},
+                         {'period':1/3, 'amplitude':16, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':0.5, 'label':'w 0.5, a 16'},
+                         {'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':0.5, 'label':'w 0.5, a 20'},
 
-                         {'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameoffset':0},
-                         {'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameoffset':8},
+
+                         {'period':1/3, 'amplitude':1, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':7, 'label':'w 7, a 1'},
+                         {'period':1/3, 'amplitude':2, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':7, 'label':'w 7, a 2'},
+                         {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':7, 'label':'w 7, a 4'},
+                         {'period':1/3, 'amplitude':8, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':7, 'label':'w 7, a 8'},
+                         {'period':1/3, 'amplitude':12, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':7, 'label':'w 7, a 12'},
+                         {'period':1/3, 'amplitude':16, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':7, 'label':'w 7, a 16'},
+                         {'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':7, 'label':'w 7, a 20'},
+
+                        #  {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'frameoffset':8, 'framewidth':7, 'label':''},
+                        #  {'period':1/3, 'amplitude':8, 'stimtype':'classicframe', 'frameoffset':8, 'framewidth':7, 'label':''},
+                        #  {'period':1/3, 'amplitude':12, 'stimtype':'classicframe', 'frameoffset':8, 'framewidth':7, 'label':''},
+                        #  {'period':1/3, 'amplitude':16, 'stimtype':'classicframe', 'frameoffset':8, 'framewidth':7, 'label':''},
+
+
+                         {'period':1/3, 'amplitude':1, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':14, 'label':'w 14, a 1'},
+                         {'period':1/3, 'amplitude':2, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':14, 'label':'w 14, a 2'},
+                         {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':14, 'label':'w 14, a 4'},
+                         {'period':1/3, 'amplitude':8, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':14, 'label':'w 14, a 8'},
+                         {'period':1/3, 'amplitude':12, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':14, 'label':'w 14, a 12'},
+                         {'period':1/3, 'amplitude':16, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':14, 'label':'w 14, a 16'},
+                         {'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':14, 'label':'w 14, a 20'},
+
+
+                         {'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':7, 'label':'w 7, a 20\nfo 0'},
+                         {'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':2, 'framewidth':7, 'label':'w 7, a 20\nfo 4'},
+                         {'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':4, 'framewidth':7, 'label':'w 7, a 20\nfo 8'},
+                         {'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':6, 'framewidth':7, 'label':'w 7, a 20\nfo 12'},
+
+
+
 
 
                          # ALTERNATIVE AMPLITUDES:
-                         {'period':1/3, 'amplitude':3.2, 'stimtype':'classicframe', 'frameoffset':0},
-                         {'period':1/3, 'amplitude':2.4, 'stimtype':'classicframe', 'frameoffset':0},
-                         {'period':1/3, 'amplitude':1.6, 'stimtype':'classicframe', 'frameoffset':0},
-                         {'period':1/3, 'amplitude':0.8, 'stimtype':'classicframe', 'frameoffset':0},
+                        #  {'period':1/3, 'amplitude':3.2, 'stimtype':'classicframe', 'frameoffset':0},
+                        #  {'period':1/3, 'amplitude':2.4, 'stimtype':'classicframe', 'frameoffset':0},
+                        #  {'period':1/3, 'amplitude':1.6, 'stimtype':'classicframe', 'frameoffset':0},
+                        #  {'period':1/3, 'amplitude':0.8, 'stimtype':'classicframe', 'frameoffset':0},
+
+                         ]
+
+        return( dictToBlockTrials(cfg=cfg, condictionary=condictionary, nblocks=5, nrepetitions=2, shuffle=True) )
+        # return( dictToBlockTrials(cfg=cfg, condictionary=condictionary, nblocks=1, nrepetitions=1, shuffle=False) )
+
+
+    if cfg['expno']==2:
+
+        condictionary = [
+
+                         {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'frameoffset':0, 'framewidth':0.5, 'label':'w 0.5, a 4'},
+                         {'period':1/3, 'amplitude':12, 'stimtype':'classicframe', 'frameoffset':0, 'framewidth':0.5, 'label':'w 0.5, a 12'},
+                         {'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameoffset':0, 'framewidth':0.5, 'label':'w 0.5, a 20'},
+
+                         {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'frameoffset':0, 'framewidth':7, 'label':'w 7, a 4'},
+                         {'period':1/3, 'amplitude':12, 'stimtype':'classicframe', 'frameoffset':0, 'framewidth':7, 'label':'w 7, a 12'},
+                         {'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameoffset':0, 'framewidth':7, 'label':'w 7, a 20'},
+
+                         {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'frameoffset':0, 'framewidth':14, 'label':'w 14, a 4'},
+                         {'period':1/3, 'amplitude':12, 'stimtype':'classicframe', 'frameoffset':0, 'framewidth':14, 'label':'w 14, a 12'},
+                         {'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameoffset':0, 'framewidth':14, 'label':'w 14, a 20'},
+
+                         {'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameoffset':2, 'framewidth':7, 'label':'w 7, a 20\nfo 4'},
+                         {'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameoffset':4, 'framewidth':7, 'label':'w 7, a 20\nfo 8'},
+                         {'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameoffset':8, 'framewidth':7, 'label':'w 7, a 20\nfo 16'},
 
                          ]
 
         return( dictToBlockTrials(cfg=cfg, condictionary=condictionary, nblocks=1, nrepetitions=1, shuffle=False) )
-        # return( dictToBlockTrials(cfg=cfg, condictionary=condictionary, nblocks=1, nrepetitions=1, shuffle=True) )
+
+
+    if cfg['expno']==3:
+
+        condictionary = [
+                         {'period':1/3, 'amplitude':4, 'stimtype':'barframe', 'innerwidth':4,   'frameoffset':0, 'framewidth':28, 'label':''},
+                         {'period':1/3, 'amplitude':4, 'stimtype':'barframe', 'innerwidth':8,   'frameoffset':0, 'framewidth':28, 'label':''},
+                         {'period':1/3, 'amplitude':4, 'stimtype':'barframe', 'innerwidth':10,  'frameoffset':0, 'framewidth':28, 'label':''},
+                         {'period':1/3, 'amplitude':4, 'stimtype':'barframe', 'innerwidth':12,  'frameoffset':0, 'framewidth':28, 'label':''},
+                         {'period':1/3, 'amplitude':4, 'stimtype':'barframe', 'innerwidth':14,  'frameoffset':0, 'framewidth':28, 'label':''},
+                         {'period':1/3, 'amplitude':4, 'stimtype':'barframe', 'innerwidth':16,  'frameoffset':0, 'framewidth':28, 'label':''},
+                         {'period':1/3, 'amplitude':4, 'stimtype':'barframe', 'innerwidth':20,  'frameoffset':0, 'framewidth':28, 'label':''},
+                         {'period':1/3, 'amplitude':4, 'stimtype':'barframe', 'innerwidth':26,  'frameoffset':0, 'framewidth':28, 'label':''},
+
+                         {'period':1/3, 'amplitude':4, 'stimtype':'barframe', 'innerwidth':4,   'frameoffset':0, 'framewidth':20, 'label':''},
+                         {'period':1/3, 'amplitude':4, 'stimtype':'barframe', 'innerwidth':4,   'frameoffset':0, 'framewidth':16, 'label':''},
+                         {'period':1/3, 'amplitude':4, 'stimtype':'barframe', 'innerwidth':4,   'frameoffset':0, 'framewidth':14, 'label':''},
+                         {'period':1/3, 'amplitude':4, 'stimtype':'barframe', 'innerwidth':4,   'frameoffset':0, 'framewidth':12, 'label':''},
+                         {'period':1/3, 'amplitude':4, 'stimtype':'barframe', 'innerwidth':4,   'frameoffset':0, 'framewidth':10, 'label':''},
+                         {'period':1/3, 'amplitude':4, 'stimtype':'barframe', 'innerwidth':4,   'frameoffset':0, 'framewidth':8, 'label':''},
+                         {'period':1/3, 'amplitude':4, 'stimtype':'barframe', 'innerwidth':4,   'frameoffset':0, 'framewidth':6, 'label':''},
+
+
+                        ]
+
+        return( dictToBlockTrials(cfg=cfg, condictionary=condictionary, nblocks=1, nrepetitions=5, shuffle=True) )
 
 
 
 
 
-
-
-
-
-def run_exp(expno=1, setup='tablet', ID=np.nan):
+def run_exp(expno=1, setup='tablet', ID=np.nan, eyetracking=False):
 
     print(expno)
 
@@ -434,6 +654,11 @@ def run_exp(expno=1, setup='tablet', ID=np.nan):
     # define monitor Window for the current setup:
     # (function defined here)
     cfg = setWindow(cfg, setup=setup)
+
+    # set up eye-tracking
+    cfg['eyetracking'] = eyetracking
+    if cfg['eyetracking']:
+        cfg = setupEyetracking(cfg)
 
     # set up visual objects for the task:
     # (function defined per experiment)
@@ -471,58 +696,53 @@ def run_exp(expno=1, setup='tablet', ID=np.nan):
         # (function defined here)
         cleanExit(cfg)
 
-def getParticipant(cfg, ID=np.nan, check_path=True):
+def getParticipant(cfg, ID=None, check_path=True):
 
-    print(cfg)
-
-    if np.isnan(ID):
-        # we need to get an integer number as participant ID:
-        IDnotANumber = True
-    else:
-        IDnotANumber = False
+    if isinstance(ID, str):
         cfg['ID'] = ID
-        IDno = int(ID)
 
-    # and we will only be happy when this is the case:
-    while (IDnotANumber):
-        # we ask for input:
-        ID = input('Enter participant number: ')
-        # and try to see if we can convert it to an integer
-        try:
-            IDno = int(ID)
-            if isinstance(ID, int):
-                pass # everything is already good
-            # and if that integer really reflects the input
-            if isinstance(ID, str):
-                if not(ID == '%d'%(IDno)):
-                    continue
-            # only then are we satisfied:
-            IDnotANumber = False
-            # and store this in the cfggetPart
-            cfg['ID'] = IDno
-        except Exception as err:
-            print(err)
-            # if it all doesn't work, we ask for input again...
-            pass
+    while (ID == None):
+
+        expInfo = {}
+        expInfo['ID'] = ''
+
+        #if askQuestions:
+        dlg = gui.DlgFromDict(expInfo, title='Infos')
+        if ID == None:
+            if isinstance(expInfo['ID'], str):
+                if len(expInfo['ID']) > 0:
+                    ID = expInfo['ID']
 
     # set up folder's for groups and participants to store the data
     if check_path:
-        for thisPath in ['../data', '../data/amplitude', '../data/amplitude/exp_%d'%(cfg['expno']), '../data/amplitude/exp_%d/p%03d'%(cfg['expno'],cfg['ID'])]:
+        # print('checking paths:')
+        for thisPath in ['../data', '../data/amplitude', '../data/amplitude/exp_%d'%(cfg['expno']), '../data/amplitude/exp_%d/%s'%(cfg['expno'],cfg['ID'])]:
+            # print(' - %s'%(thisPath))
             if os.path.exists(thisPath):
                 if not(os.path.isdir(thisPath)):
-                    os.makedirs
-                    sys.exit('"%s" should be a folder'%(thisPath))
+                    # os.makedirs
+                    sys.exit('"%s" should be a folder but is not'%(thisPath))
                 else:
-                    # if participant folder exists, don't overwrite existing data?
-                    if (thisPath == '../data/amplitude/exp_%d/p%03d'%(cfg['expno'],cfg['ID'])):
-                        sys.exit('participant already exists (crash recovery not implemented)')
+                    # if participant folder exists: do NOT overwrite existing data!
+                    if (thisPath == '../data/amplitude/exp_%d/%s'%(cfg['expno'],cfg['ID'])):
+                        # sys.exit('participant already exists (crash recovery not implemented)')
+                        print('participant already exists (crash recovery not implemented)')
+                        ID = None # trigger asking for ID again
+
             else:
+                # print('making folder: "%s"', thisPath)
                 os.mkdir(thisPath)
 
-        cfg['datadir'] = '../data/amplitude/exp_%d/p%03d/'%(cfg['expno'],cfg['ID'])
+    
+
+    # everything checks out, store in cfg:
+    cfg['ID'] = ID
+
+    # store data in folder for task / exp no / participant:
+    cfg['datadir'] = '../data/amplitude/exp_%d/%s/'%(cfg['expno'],cfg['ID'])
 
     # we need to seed the random number generator:
-    random.seed(99999 * IDno)
+    random.seed('amplitude' + ID)
 
     return cfg
 
@@ -532,6 +752,24 @@ def setWindow(cfg, setup='tablet'):
                           [0., 1., 1., np.nan, np.nan, np.nan],
                           [0., 1., 1., np.nan, np.nan, np.nan],
                           [0., 1., 1., np.nan, np.nan, np.nan]], dtype=float)
+
+    # # # # # # # # # # #
+    # LIVETRACK specs
+
+    # gammaGrid = np.array([ [  0., 135.44739,  2.4203537, np.nan, np.nan, np.nan  ],
+    #                        [  0.,  27.722954, 2.4203537, np.nan, np.nan, np.nan  ],
+    #                        [  0.,  97.999275, 2.4203537, np.nan, np.nan, np.nan  ],
+    #                        [  0.,   9.235623, 2.4203537, np.nan, np.nan, np.nan  ]  ], dtype=np.float32)
+
+    # resolution = [1920, 1080] # in pixels
+    # size       = [59.8, 33.6] # in cm
+    # distance   = 49.53 # in cm
+    # screen     = 1  # index on the system: 0 = first monitor, 1 = second monitor, and so on
+
+    # # # # # # # # # # #
+
+
+
     # for vertical tablet setup:
     if setup == 'tablet':
         #gammaGrid = np.array([[0., 136.42685, 1.7472667, np.nan, np.nan, np.nan],
@@ -603,7 +841,7 @@ def getMaxAmplitude(cfg):
 
     maxamplitude = 0
     for cond in cfg['conditions']:
-        maxamplitude = max(maxamplitude, cond['amplitude'])
+        maxamplitude = max(maxamplitude, cond['amplitude']) # take the absolute?
 
     cfg['maxamplitude'] = maxamplitude
 
@@ -637,6 +875,11 @@ def cleanExit(cfg):
 
     print('cfg stored as json')
 
+    if cfg['eyetracking']:
+        cfg['hw']['tracker'].shutdown()
+
+    # garbage collection?
+
     cfg['hw']['win'].close()
 
     return(cfg)
@@ -667,6 +910,8 @@ def saveCfg(cfg):
 
     scfg = copy.copy(cfg)
     del scfg['hw']
+
+    # print(cfg['datadir'])
 
     with open('%scfg.json'%(cfg['datadir']), 'w') as fp:
         json.dump(scfg, fp,  indent=4)
@@ -719,15 +964,13 @@ def exportData(cfg):
     return(cfg)
 
 def foldout(a):
-  # http://code.activestate.com/recipes/496807-list-of-all-combination-from-multiple-lists/
+    # http://code.activestate.com/recipes/496807-list-of-all-combination-from-multiple-lists/
 
-  r=[[]]
-  for x in a:
-    r = [ i + [y] for y in x for i in r ]
+    r=[[]]
+    for x in a:
+        r = [ i + [y] for y in x for i in r ]
 
-  return(r)
-
-
+    return(r)
 
 
 
@@ -743,6 +986,32 @@ def foldout(a):
 
 
 
-print(sys.argv)
 
-run_exp(expno=int(sys.argv[1]), setup='tablet', ID=int(sys.argv[2]))
+
+if __name__ == "__main__":
+
+    print(sys.argv)
+    print(len(sys.argv))
+
+    if len(sys.argv) > 1:
+        expno = int(sys.argv[1])
+    else:
+        expno = 1
+    
+    if len(sys.argv) > 2:
+        ID = sys.argv[2]
+    else:
+        ID = None # this will ask for an ID on the command line
+
+    if len(sys.argv) > 3:
+        eyetracking = sys.argv[3] # works if its already a bool
+        if isinstance(eyetracking, str):
+            eyetracking = eval(eyetracking)
+    else:
+        eyetracking = False
+
+    run_exp( expno = expno, 
+             setup='tablet',
+             ID=ID, 
+             eyetracking=eyetracking)
+ # we need to get an integer number as participant ID:
