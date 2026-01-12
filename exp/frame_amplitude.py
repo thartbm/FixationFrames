@@ -768,6 +768,9 @@ def setWindow(cfg, setup='livetrack'):
 
     # # # # # # # # # # #
 
+    waitBlanking = False
+
+
     if setup == 'livetrack':
         gammaGrid = np.array([ [  0., 135.44739,  2.4203537, np.nan, np.nan, np.nan  ],
                                [  0.,  27.722954, 2.4203537, np.nan, np.nan, np.nan  ],
@@ -777,8 +780,7 @@ def setWindow(cfg, setup='livetrack'):
         resolution = [1920, 1080] # in pixels
         size       = [59.8, 33.6] # in cm
         distance   = 49.53 # in cm
-        screen     = 0  # index on the system: 0 = first monitor, 1 = second monitor, and so on
-        waitBlanking = False
+        screen     = 1  # index on the system: 0 = first monitor, 1 = second monitor, and so on
 
 
     # for vertical tablet setup:
@@ -797,6 +799,7 @@ def setWindow(cfg, setup='livetrack'):
         resolution = [1680, 1050]
         size = [47, 29.6]
         distance = 60
+        screen = 1
 
         wacomOneCM = resolution[0] / 31.1
 
@@ -806,6 +809,7 @@ def setWindow(cfg, setup='livetrack'):
         resolution   = [1920, 1080]
         size = [34.5, 19.5]
         distance = 40
+        screen = 1
 
         wacomOneCM = resolution[0] / 29.5
 
@@ -831,12 +835,13 @@ def setWindow(cfg, setup='livetrack'):
     # cfg['trackextent'] = tools.monitorunittools.pix2deg( (5*wacomOneCM), cfg['hw']['mon'], correctFlat=False)
 
     # first set up the window and monitor:
-    cfg['hw']['win'] = visual.Window( fullscr=True,
-                                      size=resolution,
-                                      units='deg',
-                                      waitBlanking=waitBlanking,
-                                      color=[0,0,0],
-                                      monitor=mymonitor)
+    cfg['hw']['win'] = visual.Window( fullscr      = True,
+                                      size         = resolution,
+                                      units        = 'deg',
+                                      waitBlanking = waitBlanking,
+                                      color        = [0,0,0],
+                                      monitor      = mymonitor,
+                                      screen       = screen)
                                       # for anaglyphs: blendmode='add' !!!
 
     res = cfg['hw']['win'].size
