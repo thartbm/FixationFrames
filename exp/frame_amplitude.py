@@ -253,7 +253,8 @@ def doTrial(cfg):
             if 'escape' in keys:
                 cleanExit(cfg)
             if '0' in keys:
-                cfg['hw']['tracker'].calibrate()
+                if cfg['eyetracking']:
+                    cfg['hw']['tracker'].calibrate()
 
         if record_timing and ((this_frame_time - blank) >= 3.0):
             waiting_for_response = False
@@ -304,7 +305,8 @@ def runTasks(cfg):
         showInstruction(cfg)
 
         # after instructions, calibrate:
-        cfg['hw']['tracker'].calibrate()
+        if cfg['eyetracking']:
+            cfg['hw']['tracker'].calibrate()
 
         while cfg['currenttrial'] < len(cfg['blocks'][cfg['currentblock']]['trialtypes']):
 
@@ -938,7 +940,7 @@ def saveCfg(cfg):
 
     sscfg = copy.deepcopy(scfg)
 
-    print(sscfg.keys())
+    # print(sscfg.keys())
 
     # print(cfg['datadir'])
 
