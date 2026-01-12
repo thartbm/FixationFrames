@@ -938,6 +938,8 @@ def saveCfg(cfg):
 
     sscfg = copy.deepcopy(scfg)
 
+    print(sscfg.keys())
+
     # print(cfg['datadir'])
 
     with open('%scfg.json'%(cfg['datadir']), 'w') as fp:
