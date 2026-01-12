@@ -513,7 +513,7 @@ def setupEyetracking(cfg):
     
     ET = EyeTracker( tracker           = 'livetrack',
                      trackEyes         = trackEyes,
-                     fixationWindow    = 2.5,
+                     fixationWindow    = 2.0,
                      minFixDur         = 0.2,
                      fixTimeout        = 3.0,
                      psychopyWindow    = cfg['hw']['win'],
