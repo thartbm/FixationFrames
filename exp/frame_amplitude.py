@@ -205,15 +205,21 @@ def doTrial(cfg):
 
         cfg['hw']['fixdot'].draw()
 
-        # show frame for the classic frame:
-        frame_pos = [offsetX+stim_centre[0], stim_centre[1]]
-        frame.pos = frame_pos
-        frame.draw()
+        if cfg['eyetracking']:
+            showStimulus = cfg['hw']['tracker'].gazeInFixationWindow():
+        else:
+            showStimulus = True
 
-        if flash_red:
-            cfg['hw']['reddot'].draw()
-        if flash_blue:
-            cfg['hw']['bluedot'].draw()
+        if showStimulus:
+            # show frame for the classic frame:
+            frame_pos = [offsetX+stim_centre[0], stim_centre[1]]
+            frame.pos = frame_pos
+            frame.draw()
+
+            if flash_red:
+                cfg['hw']['reddot'].draw()
+            if flash_blue:
+                cfg['hw']['bluedot'].draw()
 
 
         # in DEGREES:
@@ -239,13 +245,15 @@ def doTrial(cfg):
         red_on      += [flash_red]
 
         # key responses:
-        keys = event.getKeys(keyList=['space','escape'])
+        keys = event.getKeys(keyList=['space','escape','0'])
         if len(keys):
             if 'space' in keys:
                 waiting_for_response = False
                 reaction_time = this_frame_time - blank
             if 'escape' in keys:
                 cleanExit(cfg)
+            if '0' in keys:
+                cfg['hw']['tracker'].calibrate()
 
         if record_timing and ((this_frame_time - blank) >= 3.0):
             waiting_for_response = False
@@ -295,7 +303,8 @@ def runTasks(cfg):
 
         showInstruction(cfg)
 
-        
+        # after instructions, calibrate:
+        cfg['hw']['tracker'].calibrate()
 
         while cfg['currenttrial'] < len(cfg['blocks'][cfg['currentblock']]['trialtypes']):
 
@@ -499,7 +508,7 @@ def setupEyetracking(cfg):
     
     ET = EyeTracker( tracker           = 'livetrack',
                      trackEyes         = trackEyes,
-                     fixationWindow    = 2.0,
+                     fixationWindow    = 2.5,
                      minFixDur         = 0.2,
                      fixTimeout        = 3.0,
                      psychopyWindow    = cfg['hw']['win'],
@@ -924,13 +933,15 @@ def dictToBlockTrials(cfg, condictionary, nblocks, nrepetitions, shuffle=True):
 
 def saveCfg(cfg):
 
-    scfg = copy.deepcopy(cfg)
+    scfg = copy.copy(cfg)
     del scfg['hw']
+
+    sscfg = copy.deepcopy(scfg)
 
     # print(cfg['datadir'])
 
     with open('%scfg.json'%(cfg['datadir']), 'w') as fp:
-        json.dump(scfg, fp,  indent=4)
+        json.dump(sscfg, fp,  indent=4)
 
 def getPixPos(cfg):
 
