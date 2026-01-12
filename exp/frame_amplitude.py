@@ -297,6 +297,9 @@ def runTasks(cfg):
     if not('currenttrial' in cfg):
         cfg['currenttrial'] = 0
 
+    if cfg['eyetracking']:
+        cfg['hw']['tracker'].startcollecting()
+
     while cfg['currentblock'] < len(cfg['blocks']):
 
         # do the trials:
