@@ -746,7 +746,7 @@ def getParticipant(cfg, ID=None, check_path=True):
 
     return cfg
 
-def setWindow(cfg, setup='tablet'):
+def setWindow(cfg, setup='livetrack'):
 
     gammaGrid = np.array([[0., 1., 1., np.nan, np.nan, np.nan],
                           [0., 1., 1., np.nan, np.nan, np.nan],
@@ -768,6 +768,16 @@ def setWindow(cfg, setup='tablet'):
 
     # # # # # # # # # # #
 
+    if setup == 'livetrack':
+        gammaGrid = np.array([ [  0., 135.44739,  2.4203537, np.nan, np.nan, np.nan  ],
+                               [  0.,  27.722954, 2.4203537, np.nan, np.nan, np.nan  ],
+                               [  0.,  97.999275, 2.4203537, np.nan, np.nan, np.nan  ],
+                               [  0.,   9.235623, 2.4203537, np.nan, np.nan, np.nan  ]  ], dtype=np.float32)
+
+        resolution = [1920, 1080] # in pixels
+        size       = [59.8, 33.6] # in cm
+        distance   = 49.53 # in cm
+        screen     = 1  # index on the system: 0 = first monitor, 1 = second monitor, and so on
 
 
     # for vertical tablet setup:
@@ -1010,8 +1020,8 @@ if __name__ == "__main__":
     else:
         eyetracking = False
 
-    run_exp( expno = expno, 
-             setup='tablet',
-             ID=ID, 
-             eyetracking=eyetracking)
+    run_exp( expno       = expno, 
+             setup       = 'livetrack',
+             ID          = ID, 
+             eyetracking = eyetracking)
  # we need to get an integer number as participant ID:
