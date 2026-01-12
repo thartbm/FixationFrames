@@ -523,6 +523,8 @@ def setupEyetracking(cfg):
                      calibrationpoints = 5,
                      colors            = colors ) # only for EyeLink
 
+    ET.initialize(calibrationPoints = np.array([[0,0],   [-10.437,0],[0,5.916],[10.437,0],[0,-5.916]                                 ]) )
+
     cfg['hw']['tracker'] = ET
 
     return(cfg)
