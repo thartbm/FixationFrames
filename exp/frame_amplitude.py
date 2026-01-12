@@ -206,7 +206,7 @@ def doTrial(cfg):
         cfg['hw']['fixdot'].draw()
 
         if cfg['eyetracking']:
-            showStimulus = cfg['hw']['tracker'].gazeInFixationWindow():
+            showStimulus = cfg['hw']['tracker'].gazeInFixationWindow()
         else:
             showStimulus = True
 
