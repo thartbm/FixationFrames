@@ -784,7 +784,7 @@ def setWindow(cfg, setup='livetrack'):
         gammaGrid = np.array([ [  0., 135.44739,  2.4203537, np.nan, np.nan, np.nan  ],
                                [  0.,  27.722954, 2.4203537, np.nan, np.nan, np.nan  ],
                                [  0.,  97.999275, 2.4203537, np.nan, np.nan, np.nan  ],
-                               [  0.,   9.235623, 2.4203537, np.nan, np.nan, np.nan  ]  ], dtype=np.float32)
+                               [  0.,   9.235623, 2.4203537, np.nan, np.nan, np.nan  ]  ], dtype=float)
 
         resolution = [1920, 1080] # in pixels
         size       = [59.8, 33.6] # in cm
