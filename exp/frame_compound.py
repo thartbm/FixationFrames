@@ -149,7 +149,7 @@ def doDotTrial(cfg):
         maxdotlife = cfg['hw']['dotfield']['maxdotlife']
         trialdict['dotlife'] = maxdotlife
 
-    print(maxdotlife)
+    # print(maxdotlife)
 
     # ndots _needs_ to be based on the stimulus property:
     ndots = cfg['hw']['dotfield']['ndots']
@@ -162,18 +162,32 @@ def doDotTrial(cfg):
     else:
         timespread = 0 # in seconds
 
+    ts = np.linspace(-0.5,0.5,ndots) * timespread
+    random.shuffle(ts)
+
     # AMPLITUDESPREAD
     if 'amplitudespread' in trialdict.keys():
         amplitudespread = trialdict['amplitudespread']
     else:
         amplitudespread = 0 # in dva
 
+    ds = np.linspace(-0.5,0.5,ndots) * amplitudespread
+    random.shuffle(ds)
 
     # ANGLESPREAD
     if 'anglespread' in trialdict.keys():
         anglespread = trialdict['anglespread']
     else:
         anglespread = 0 # in degrees angle (or radians?)
+
+    # print(anglespread)
+
+    rs = np.linspace(-0.5,0.5,ndots) * anglespread
+    random.shuffle(rs)
+    rs = np.tan((rs / 180) * np.pi)
+
+    # print([np.min(rs), np.max(rs)])
+
 
 
     # # present fixation if necessary:
@@ -183,13 +197,13 @@ def doDotTrial(cfg):
     #     fixdot = False
     #     trialdict['fixdot'] = fixdot
 
-    # if 'label' in trialdict.keys():
-    #     label = trialdict['label']
-    # else:
-    #     label = ''
+    if 'label' in trialdict.keys():
+        label = trialdict['label']
+    else:
+        label = ''
     
-    # cfg['hw']['text'].text = label
-    # cfg['hw']['text'].pos = [4,4]
+    cfg['hw']['text'].text = label
+    cfg['hw']['text'].pos = [4,4]
 
 
     # # change frequency and distance for static periods at the extremes:
@@ -261,7 +275,7 @@ def doDotTrial(cfg):
     ypos = np.linspace(-0.5,0.5,ndots) * (framesize[1] - dotsize)
     random.shuffle(ypos)
 
-    dotlifetimes = [random.random() * maxdotlife for x in range(ndots)]
+    dotlifetimes = np.array([random.random() * maxdotlife for x in range(ndots)])
 
     xys = copy.deepcopy(cfg['hw']['dotfield']['xys'])
 
@@ -287,27 +301,31 @@ def doDotTrial(cfg):
         t = this_frame_time
 
         # sawtooth, scaled from -0.5 to 0.5
-        offsetX = abs( ( ((t/2) % p) - (p/2) ) * (2/p) ) - 0.5
-        offsetX = offsetX * d
+        offsetX = abs( ( (((t+ts)/2) % p) - (p/2) ) * (2/p) ) - 0.5
+        offsetX = offsetX * (d / distance)
 
         flash_red  = False
         flash_blue = False
 
         # flash any dots?
-        if ( ((t + (1/30) ) % (2*p)) < (1.75/30)):
+        if ( ((t + (1/30) ) % (2*p)) < (1.975/30)):
             flash_red = True
-        if ( ((t + (1/30) + (p/1) ) % (2*p)) < (1.75/30) ):
+        if ( ((t + (1/30) + (p/1) ) % (2*p)) < (1.975/30) ):
             flash_blue = True
 
-        # flash frame for apparent motion frame:
-        if ( ((t + (1/30)) % (p/1)) < (2/30)):
-            flash_frame = Truexys = copy.deepcopy(cfg['hw']['dotfield']['xys'])
-
+        # print(np.max(offsetX))
+        
         # correct frame position:
-        if (abs(offsetX) >= (distance/2)):
-            offsetX = np.sign(offsetX) * (distance/2)
-        else:
-            flash_frame = False
+        idx = np.nonzero(abs(offsetX) > 0.5)[0]
+        # print(len(idx))
+        if len(idx):
+            offsetX[idx] = np.sign(offsetX[idx]) * 0.5
+
+        # print(np.max(offsetX))
+
+        offsetX = offsetX * (distance + ds) #(d + ds)
+
+        # print(np.max(offsetX))
 
         # flip offset according to invert percepts:
         offsetX = offsetX * xfactor
@@ -315,18 +333,17 @@ def doDotTrial(cfg):
         # if fixdot:
         #     cfg['hw']['fixdot'].draw()
 
-        cfg['hw']['dotfield']['dotlifetimes'] += frame_time_elapsed
-        idx = np.nonzero(cfg['hw']['dotfield']['dotlifetimes'] > maxdotlife)[0]
-        cfg['hw']['dotfield']['dotlifetimes'][idx] -= maxdotlife
+        dotlifetimes += frame_time_elapsed
+        idx = np.nonzero(dotlifetimes > maxdotlife)[0]
+        dotlifetimes[idx] -= maxdotlife
         xpos[idx] = (np.random.random(size=len(idx)) - 0.5)  * (framesize[0] - dotsize)
 
-
-
+        # print(rs[:10] * offsetX[:10])
 
 
         
         xys[:,0] = xpos + offsetX + frameoffset[0]
-        xys[:,1] = ypos + frameoffset[1]
+        xys[:,1] = ypos + frameoffset[1] + (offsetX * rs)
 
         
 
@@ -342,8 +359,8 @@ def doDotTrial(cfg):
             cfg['hw']['bluedot'].draw()
 
 
-        # if cfg['expno'] in [2,3]:
-        #     cfg['hw']['text'].draw()
+        if cfg['expno'] in [2,3]:
+            cfg['hw']['text'].draw()
 
 
         # in DEGREES:
@@ -377,8 +394,8 @@ def doDotTrial(cfg):
             if 'escape' in keys:
                 cleanExit(cfg)
 
-        # if record_timing and ((this_frame_time - blank) >= 3.0):
-        #     waiting_for_response = False
+        if record_timing and ((this_frame_time - blank) >= 4.0):
+            waiting_for_response = False
 
 
     # if record_timing:
@@ -409,12 +426,185 @@ def doDotTrial(cfg):
 
 # # # # # # # # # # # # # # # # # 
 # 
-# CURRENTLY UNUSED FUNCTION
-# doMouseTrial()
+# for regular frames:
 # 
 # # # # # # # # # # # # # # # # #
 
+def doFrameTrial(cfg):
 
+    trialtype = cfg['blocks'][cfg['currentblock']]['trialtypes'][cfg['currenttrial']]
+    trialdict = copy.deepcopy(cfg['conditions'][trialtype])
+
+    # straight up copies from the PsychoJS version:
+    period = trialdict['period']
+    #frequency = 1/copy.deepcopy(trialdict['period'])
+    distance = trialdict['amplitude']
+
+
+    if 'label' in trialdict.keys():
+        label = trialdict['label']
+    else:
+        label = ''
+
+    cfg['hw']['text'].text = label
+    cfg['hw']['text'].pos = [4,4]
+
+    # # change frequency and distance for static periods at the extremes:
+    # if (0.35 - period) > 0:
+    #     # make sure there is a 350 ms inter-flash interval
+    #     extra_frames = int( np.ceil( (0.35 - period) / (1/60) ) * 2 )
+    # else:
+    #     extra_frames = 9
+
+    # extra_frames = 9 + int( max(0, (0.35 - period) / (1/60) ) )
+
+    # p = period + (extra_frames/60)
+    p = period + (3/30)
+    d = (distance/period) * p
+
+
+    # DO THE TRIAL HERE
+    trial_start_time = time.time()
+
+
+    previous_frame_time = 0
+    # # # # # # # # # #
+    # WHILE NO RESPONSE
+
+    frame_times = []
+    frame_pos_X = []
+    blue_on     = []
+    red_on      = []
+
+    frameoffset = [-8, -8]
+    cfg['hw']['bluedot'].pos = [frameoffset[0], frameoffset[1]+1]
+    cfg['hw']['reddot'].pos  = [frameoffset[0], frameoffset[1]-1]
+
+    # we show a blank screen for 1/3 - 2.3 of a second (uniform dist):
+    blank = 1/3 + (random.random() * 1/3)
+
+    if cfg['expno'] in [2,3]:
+        blank = p
+
+    # the frame motion gets multiplied by -1 or 1:
+    xfactor = [-1,1][random.randint(0,1)]
+
+    if cfg['expno'] in [2,3]:
+        xfactor = 1
+
+    # the mouse response has a random offset between -3 and 3 degrees
+    mouse_offset = (random.random() - 0.5) * 6
+
+    waiting_for_response = True
+
+
+    while waiting_for_response:
+
+        # blank screen of random length between 1/3 and 2.3 seconds
+        while (time.time() - trial_start_time) < blank:
+            event.clearEvents(eventType='mouse')
+            event.clearEvents(eventType='keyboard')
+            cfg['hw']['win'].flip()
+
+        if cfg['expno'] in [2,3]:
+            if (time.time() - trial_start_time) > (p * 9):
+                reaction_time = 0
+                waiting_for_response = False
+
+        # on every frame:
+        this_frame_time = time.time() - trial_start_time
+        frame_time_elapsed = this_frame_time - previous_frame_time
+
+        # shorter variable for equations:
+        t = this_frame_time
+
+        # sawtooth, scaled from -0.5 to 0.5
+        offsetX = abs( ( ((t/2) % p) - (p/2) ) * (2/p) ) - 0.5
+        offsetX = offsetX * d
+
+        flash_red  = False
+        flash_blue = False
+        # flash_frame = False
+
+        # flash any dots?
+        if ( ((t + (1/30)    ) % (2*p)) < (1.95/30)):
+            flash_red = True
+        if ( ((t + (1/30) + p) % (2*p)) < (1.95/30) ):
+            flash_blue = True
+
+        # # flash frame for apparent motion frame:
+        # if ( ((t + (1/30)) % (p/1)) < (2/30)):
+        #     flash_frame = True
+
+        # correct frame position:
+        if (abs(offsetX) >= (distance/2)):
+            offsetX = np.sign(offsetX) * (distance/2)
+        # else:
+        #     flash_frame = False
+
+        # flip offset according to invert percepts:
+        offsetX = offsetX * xfactor
+
+
+        # show frame for the classic and bar frames:
+        if trialdict['stimtype'] in ['classicframe']:   
+            frame_pos = [offsetX+frameoffset[0], frameoffset[1]]
+
+            cfg['hw']['frame'].pos = frame_pos
+            cfg['hw']['frame'].draw()
+
+
+        # flash the dots, if necessary:
+        if flash_red:
+            cfg['hw']['reddot'].draw()
+        if flash_blue:
+            cfg['hw']['bluedot'].draw()
+
+
+        # in DEGREES:
+        mousepos = cfg['hw']['mouse'].getPos()
+        percept = (mousepos[0] + mouse_offset) / 4
+
+        # blue is on top:
+        cfg['hw']['bluedot_ref'].pos = [ (-1*frameoffset[0])+percept, (-1*frameoffset[1])+1 ]
+        cfg['hw']['reddot_ref'].pos = [  (-1*frameoffset[0])-percept, (-1*frameoffset[1])-1 ]
+        if cfg['expno'] in [2,3]:
+            cfg['hw']['text'].draw()
+        else:
+            cfg['hw']['bluedot_ref'].draw()
+            cfg['hw']['reddot_ref'].draw()
+
+        cfg['hw']['win'].flip()
+
+        previous_frame_time = this_frame_time
+
+
+        # key responses:
+        keys = event.getKeys(keyList=['space','escape'])
+        if len(keys):
+            if 'space' in keys:
+                waiting_for_response = False
+                reaction_time = this_frame_time - blank
+            if 'escape' in keys:
+                cleanExit(cfg)
+
+
+
+    response                = trialdict
+    response['xfactor']     = xfactor
+    response['RT']          = reaction_time
+    response['percept_abs'] = percept
+    response['percept_rel'] = percept/3
+    response['percept_scl'] = (percept/3)*cfg['dot_offset']*2
+    response['trial_start'] = trial_start_time
+    response['blank']       = blank
+
+
+    cfg['responses'] += [response]
+
+    cfg['hw']['win'].flip()
+
+    return(cfg)
 
 
 def showInstruction(cfg):
@@ -640,20 +830,29 @@ def getStimuli(cfg, setup='tablet'):
 
     cfg['hw']['dotfield'] = dotfield
 
-    cfg['hw']['white_frame'] = visual.Rect(win=cfg['hw']['win'],
-                                           width=7,
-                                           height=7,
-                                           units='deg',
-                                           lineColor=None,
-                                           lineWidth=0,
-                                           fillColor=[1,1,1])
-    cfg['hw']['gray_frame'] =  visual.Rect(win=cfg['hw']['win'],
-                                           width=6,
-                                           height=6,
-                                           units='deg',
-                                           lineColor=None,
-                                           lineWidth=0,
-                                           fillColor=[0,0,0])
+
+    cfg['hw']['frame'] = visual.ShapeStim(  win=cfg['hw']['win'],
+                                            units='deg',
+                                            colorSpace='rgb',
+                                            lineColor=None,
+                                            fillColor=[1,1,1],
+                                            vertices=[[[-3.5,-3.5],[-3.5,3.5],[3.5,3.5],[3.5,-3.5],[-3.5,-3.5]],[[-3,-3],[-3,3],[3,3],[3,-3],[-3,-3]]]
+                                            )                         
+
+    # cfg['hw']['white_frame'] = visual.Rect(win=cfg['hw']['win'],
+    #                                        width=7,
+    #                                        height=7,
+    #                                        units='deg',
+    #                                        lineColor=None,
+    #                                        lineWidth=0,
+    #                                        fillColor=[1,1,1])
+    # cfg['hw']['gray_frame'] =  visual.Rect(win=cfg['hw']['win'],
+    #                                        width=6,
+    #                                        height=6,
+    #                                        units='deg',
+    #                                        lineColor=None,
+    #                                        lineWidth=0,
+    #                                        fillColor=[0,0,0])
 
 
     cfg['hw']['bluedot_ref'] = visual.Circle(win=cfg['hw']['win'],
@@ -712,41 +911,91 @@ def getTasks(cfg):
 
         condictionary = [
 
-                 {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':0, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1},
-                 {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':0, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2},
-                 {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':0, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/3},
-                 {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':0, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/4},
-                 {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':0, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/5},
+                 {'test':'dotlife', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':0, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1},
+                 {'test':'dotlife', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':0, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2},
+                 {'test':'dotlife', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':0, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/4},
+                 {'test':'dotlife', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':0, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/8},
+                 {'test':'dotlife', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':0, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/16},
 
-                #  {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.000, 'anglespread':0, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2},
-                #  {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.050, 'anglespread':0, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2},
-                #  {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.100, 'anglespread':0, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2},
-                #  {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.150, 'anglespread':0, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2},
-                #  {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':0, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2},
+                 {'test':'timespread', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.000, 'anglespread':0, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2},
+                 {'test':'timespread', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.050, 'anglespread':0, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2},
+                 {'test':'timespread', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.100, 'anglespread':0, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2},
+                 {'test':'timespread', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.150, 'anglespread':0, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2},
+                 {'test':'timespread', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':0, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2},
+
+                 {'test':'amplitudespread', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':0, 'amplitudespread':0.0, 'framesize':[7,7], 'maxdotlife':1/2},
+                 {'test':'amplitudespread', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':0, 'amplitudespread':1.0, 'framesize':[7,7], 'maxdotlife':1/2},
+                 {'test':'amplitudespread', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':0, 'amplitudespread':2.0, 'framesize':[7,7], 'maxdotlife':1/2},
+                 {'test':'amplitudespread', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':0, 'amplitudespread':4.0, 'framesize':[7,7], 'maxdotlife':1/2},
+                 {'test':'amplitudespread', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':0, 'amplitudespread':8.0, 'framesize':[7,7], 'maxdotlife':1/2},
+
+                 {'test':'anglespread', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':0,  'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2},
+                 {'test':'anglespread', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':10, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2},
+                 {'test':'anglespread', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':20, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2},
+                 {'test':'anglespread', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':30, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2},
+                 {'test':'anglespread', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':40, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2},
+
+                 {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.000, 'anglespread':0,  'amplitudespread':0.0, 'framesize':[7,7], 'maxdotlife':1},
+                 {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.050, 'anglespread':10, 'amplitudespread':1.0, 'framesize':[7,7], 'maxdotlife':1/2},
+                 {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.100, 'anglespread':20, 'amplitudespread':2.0, 'framesize':[7,7], 'maxdotlife':1/4},
+                 {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.150, 'anglespread':30, 'amplitudespread':4.0, 'framesize':[7,7], 'maxdotlife':1/8},
+                 {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':40, 'amplitudespread':8.0, 'framesize':[7,7], 'maxdotlife':1/16},
 
 
-                #  {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':0,  'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2},
-                #  {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':5,  'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2},
-                #  {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':10, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2},
-                #  {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':15, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2},
-                #  {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':20, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2},
+                 {'test':'classic', 'period':1/4, 'amplitude':4.0, 'stimtype':'classicframe'},
+                 {'test':'classic', 'period':1/4, 'amplitude':3.2, 'stimtype':'classicframe'},
+                 {'test':'classic', 'period':1/4, 'amplitude':2.4, 'stimtype':'classicframe'},
+                 {'test':'classic', 'period':1/4, 'amplitude':1.6, 'stimtype':'classicframe'},
+                 {'test':'classic', 'period':1/4, 'amplitude':0.8, 'stimtype':'classicframe'},
+                 ]
+
+        return( dictToBlockTrials(cfg=cfg, condictionary=condictionary, nblocks=5, nrepetitions=1, shuffle=True) )
+        #return( dictToBlockTrials(cfg=cfg, condictionary=condictionary, nblocks=1, nrepetitions=1) )
 
 
-                #  {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':0, 'amplitudespread':0.0, 'framesize':[7,7], 'maxdotlife':1/2},
-                #  {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':0, 'amplitudespread':0.5, 'framesize':[7,7], 'maxdotlife':1/2},
-                #  {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':0, 'amplitudespread':1.0, 'framesize':[7,7], 'maxdotlife':1/2},
-                #  {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':0, 'amplitudespread':2.0, 'framesize':[7,7], 'maxdotlife':1/2},
-                #  {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':0, 'amplitudespread':4.0, 'framesize':[7,7], 'maxdotlife':1/2},
+    if cfg['expno']==2:
+
+        condictionary = [
+
+                 {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':0, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1, 'record_time':True, 'label':'normal'},
+                #  {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':0, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2, 'record_time':True},
+                #  {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':0, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/4, 'record_time':True},
+                #  {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':0, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/8, 'record_time':True},
+                 {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':0, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/16, 'record_time':True, 'label':'short dot life'},
+
+                #  {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.000, 'anglespread':0, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2, 'record_time':True},
+                #  {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.050, 'anglespread':0, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2, 'record_time':True},
+                #  {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.100, 'anglespread':0, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2, 'record_time':True},
+                #  {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.150, 'anglespread':0, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2, 'record_time':True},
+                 {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':0, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2, 'record_time':True, 'label':'variable cycling time'},
+
+                #  {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':0, 'amplitudespread':0.0, 'framesize':[7,7], 'maxdotlife':1/2, 'record_time':True},
+                #  {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':0, 'amplitudespread':1.0, 'framesize':[7,7], 'maxdotlife':1/2, 'record_time':True},
+                #  {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':0, 'amplitudespread':2.0, 'framesize':[7,7], 'maxdotlife':1/2, 'record_time':True},
+                #  {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':0, 'amplitudespread':4.0, 'framesize':[7,7], 'maxdotlife':1/2, 'record_time':True},
+                 {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':0, 'amplitudespread':8.0, 'framesize':[7,7], 'maxdotlife':1/2, 'record_time':True, 'label':'variable movement amplitude'},
+
+                #  {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':0,  'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2, 'record_time':True},
+                #  {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':10, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2, 'record_time':True},
+                #  {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':20, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2, 'record_time':True},
+                #  {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':30, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2, 'record_time':True},
+                 {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':40, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2, 'record_time':True, 'label':'variable angles of movement'},
+
+                #  {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.000, 'anglespread':0,  'amplitudespread':0.0, 'framesize':[7,7], 'maxdotlife':1, 'record_time':True},
+                #  {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.050, 'anglespread':10, 'amplitudespread':1.0, 'framesize':[7,7], 'maxdotlife':1/2, 'record_time':True},
+                #  {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.100, 'anglespread':20, 'amplitudespread':2.0, 'framesize':[7,7], 'maxdotlife':1/4, 'record_time':True},
+                #  {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.150, 'anglespread':30, 'amplitudespread':4.0, 'framesize':[7,7], 'maxdotlife':1/8, 'record_time':True},
+                 {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':40, 'amplitudespread':8.0, 'framesize':[7,7], 'maxdotlife':1/16, 'record_time':True, 'label':'all combined'},
 
 
-
-                #  {'period':1/4, 'amplitude':4, 'stimtype':'classicframe'},
-
+                #  {'period':1/4, 'amplitude':4.0, 'stimtype':'classicframe'},
+                #  {'period':1/4, 'amplitude':3.2, 'stimtype':'classicframe'},
+                #  {'period':1/4, 'amplitude':2.4, 'stimtype':'classicframe'},
+                #  {'period':1/4, 'amplitude':1.6, 'stimtype':'classicframe'},
+                #  {'period':1/4, 'amplitude':0.8, 'stimtype':'classicframe'},
                  ]
 
         return( dictToBlockTrials(cfg=cfg, condictionary=condictionary, nblocks=1, nrepetitions=1, shuffle=False) )
-        #return( dictToBlockTrials(cfg=cfg, condictionary=condictionary, nblocks=1, nrepetitions=1) )
-
 
 
 
@@ -868,7 +1117,7 @@ def getParticipant(cfg, ID=None, check_path=True):
     # set up folder's for groups and participants to store the data
     if check_path:
         # print('checking paths:')
-        for thisPath in ['../data', '../data/compound', '../data/compound/exp_%d'%(cfg['expno']), '../data/compound/exp_%d/%s'%(cfg['expno'],cfg['ID'])]:
+        for thisPath in ['../data', '../data/coherence', '../data/coherence/exp_%d'%(cfg['expno']), '../data/coherence/exp_%d/%s'%(cfg['expno'],cfg['ID'])]:
             # print(' - %s'%(thisPath))
             if os.path.exists(thisPath):
                 if not(os.path.isdir(thisPath)):
@@ -876,7 +1125,7 @@ def getParticipant(cfg, ID=None, check_path=True):
                     sys.exit('"%s" should be a folder but is not'%(thisPath))
                 else:
                     # if participant folder exists: do NOT overwrite existing data!
-                    if (thisPath == '../data/compound/exp_%d/%s'%(cfg['expno'],cfg['ID'])):
+                    if (thisPath == '../data/coherence/exp_%d/%s'%(cfg['expno'],cfg['ID'])):
                         # sys.exit('participant already exists (crash recovery not implemented)')
                         print('participant already exists (crash recovery not implemented)')
                         ID = None # trigger asking for ID again
@@ -891,7 +1140,7 @@ def getParticipant(cfg, ID=None, check_path=True):
     cfg['ID'] = ID
 
     # store data in folder for task / exp no / participant:
-    cfg['datadir'] = '../data/compound/exp_%d/%s/'%(cfg['expno'],cfg['ID'])
+    cfg['datadir'] = '../data/coherence/exp_%d/%s/'%(cfg['expno'],cfg['ID'])
 
     # we need to seed the random number generator:
     random.seed('compound' + ID)
