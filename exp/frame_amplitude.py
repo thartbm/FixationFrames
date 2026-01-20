@@ -39,11 +39,15 @@ def doTrial(cfg):
     #frequency = 1/copy.deepcopy(trialdict['period'])
     distance = trialdict['amplitude']
 
-
+    showFixation = True
     if 'frameoffset' in trialdict.keys():
         frameoffset = trialdict['frameoffset']
+        if frameoffset == None:
+            frameoffset = 0
+            showFixation = False
     else:
         frameoffset = 0
+        showFixation = False
 
     if 'label' in trialdict.keys():
         label = trialdict['label']
@@ -203,11 +207,12 @@ def doTrial(cfg):
         if cfg['expno'] in [2]:
             cfg['hw']['text'].draw()
 
-        cfg['hw']['fixdot'].draw()
+        if showFixation:
+            cfg['hw']['fixdot'].draw()
 
         if cfg['eyetracking']:
             gaze = cfg['hw']['tracker'].lastsample()
-            print(gaze)
+            # print(gaze)
             showStimulus = ((gaze[0] - frameoffset)**2 + (gaze[1]+2)**2)**0.5 <= 2.0
         else:
             showStimulus = True
@@ -548,22 +553,22 @@ def getTasks(cfg):
         condictionary = [
 
 
-                         {'period':1/3, 'amplitude':1, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':0.5, 'label':'w 0.5, a 1'},
-                         {'period':1/3, 'amplitude':2, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':0.5, 'label':'w 0.5, a 2'},
-                         {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':0.5, 'label':'w 0.5, a 4'},
-                         {'period':1/3, 'amplitude':8, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':0.5, 'label':'w 0.5, a 8'},
-                         {'period':1/3, 'amplitude':12, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':0.5, 'label':'w 0.5, a 12'},
-                         {'period':1/3, 'amplitude':16, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':0.5, 'label':'w 0.5, a 16'},
-                         {'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':0.5, 'label':'w 0.5, a 20'},
+                         {'period':1/3, 'amplitude':1, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':None, 'framewidth':0.5, 'label':'w 0.5, a 1'},
+                         {'period':1/3, 'amplitude':2, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':None, 'framewidth':0.5, 'label':'w 0.5, a 2'},
+                         {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':None, 'framewidth':0.5, 'label':'w 0.5, a 4'},
+                         {'period':1/3, 'amplitude':8, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':None, 'framewidth':0.5, 'label':'w 0.5, a 8'},
+                         {'period':1/3, 'amplitude':12, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':None, 'framewidth':0.5, 'label':'w 0.5, a 12'},
+                         {'period':1/3, 'amplitude':16, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':None, 'framewidth':0.5, 'label':'w 0.5, a 16'},
+                         {'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':None, 'framewidth':0.5, 'label':'w 0.5, a 20'},
 
 
-                         {'period':1/3, 'amplitude':1, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':7, 'label':'w 7, a 1'},
-                         {'period':1/3, 'amplitude':2, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':7, 'label':'w 7, a 2'},
-                         {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':7, 'label':'w 7, a 4'},
-                         {'period':1/3, 'amplitude':8, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':7, 'label':'w 7, a 8'},
-                         {'period':1/3, 'amplitude':12, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':7, 'label':'w 7, a 12'},
-                         {'period':1/3, 'amplitude':16, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':7, 'label':'w 7, a 16'},
-                         {'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':7, 'label':'w 7, a 20'},
+                         {'period':1/3, 'amplitude':1, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':None, 'framewidth':7, 'label':'w 7, a 1'},
+                         {'period':1/3, 'amplitude':2, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':None, 'framewidth':7, 'label':'w 7, a 2'},
+                         {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':None, 'framewidth':7, 'label':'w 7, a 4'},
+                         {'period':1/3, 'amplitude':8, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':None, 'framewidth':7, 'label':'w 7, a 8'},
+                         {'period':1/3, 'amplitude':12, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':None, 'framewidth':7, 'label':'w 7, a 12'},
+                         {'period':1/3, 'amplitude':16, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':None, 'framewidth':7, 'label':'w 7, a 16'},
+                         {'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':None, 'framewidth':7, 'label':'w 7, a 20'},
 
                         #  {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'frameoffset':8, 'framewidth':7, 'label':''},
                         #  {'period':1/3, 'amplitude':8, 'stimtype':'classicframe', 'frameoffset':8, 'framewidth':7, 'label':''},
@@ -571,20 +576,20 @@ def getTasks(cfg):
                         #  {'period':1/3, 'amplitude':16, 'stimtype':'classicframe', 'frameoffset':8, 'framewidth':7, 'label':''},
 
 
-                         {'period':1/3, 'amplitude':1, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':14, 'label':'w 14, a 1'},
-                         {'period':1/3, 'amplitude':2, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':14, 'label':'w 14, a 2'},
-                         {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':14, 'label':'w 14, a 4'},
-                         {'period':1/3, 'amplitude':8, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':14, 'label':'w 14, a 8'},
-                         {'period':1/3, 'amplitude':12, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':14, 'label':'w 14, a 12'},
-                         {'period':1/3, 'amplitude':16, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':14, 'label':'w 14, a 16'},
-                         {'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':14, 'label':'w 14, a 20'},
+                        #  {'period':1/3, 'amplitude':1, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':14, 'label':'w 14, a 1'},
+                        #  {'period':1/3, 'amplitude':2, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':14, 'label':'w 14, a 2'},
+                        #  {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':14, 'label':'w 14, a 4'},
+                        #  {'period':1/3, 'amplitude':8, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':14, 'label':'w 14, a 8'},
+                        #  {'period':1/3, 'amplitude':12, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':14, 'label':'w 14, a 12'},
+                        #  {'period':1/3, 'amplitude':16, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':14, 'label':'w 14, a 16'},
+                        #  {'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':14, 'label':'w 14, a 20'},
 
 
-                        #  {'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':7, 'label':'w 7, a 20\nfo 0'},
-                         {'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':2, 'framewidth':7, 'label':'w 7, a 20\nfo 4'},
-                         {'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':4, 'framewidth':7, 'label':'w 7, a 20\nfo 8'},
-                         {'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':6, 'framewidth':7, 'label':'w 7, a 20\nfo 12'},
-                         {'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':8, 'framewidth':7, 'label':'w 7, a 20\nfo 16'},
+                        # #  {'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':7, 'label':'w 7, a 20\nfo 0'},
+                        #  {'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':2, 'framewidth':7, 'label':'w 7, a 20\nfo 4'},
+                        #  {'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':4, 'framewidth':7, 'label':'w 7, a 20\nfo 8'},
+                        #  {'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':6, 'framewidth':7, 'label':'w 7, a 20\nfo 12'},
+                        #  {'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':8, 'framewidth':7, 'label':'w 7, a 20\nfo 16'},
 
 
 
@@ -597,7 +602,7 @@ def getTasks(cfg):
 
                          ]
 
-        return( dictToBlockTrials(cfg=cfg, condictionary=condictionary, nblocks=4, nrepetitions=2, shuffle=True) )
+        return( dictToBlockTrials(cfg=cfg, condictionary=condictionary, nblocks=3, nrepetitions=2, shuffle=True) )
         # return( dictToBlockTrials(cfg=cfg, condictionary=condictionary, nblocks=1, nrepetitions=1, shuffle=False) )
 
 
@@ -655,7 +660,7 @@ def getTasks(cfg):
 
 
 
-def run_exp(expno=1, setup='tablet', ID=np.nan, eyetracking=False):
+def run_exp(expno=1, setup='tablet', ID=None, eyetracking=False):
 
     print(expno)
 
