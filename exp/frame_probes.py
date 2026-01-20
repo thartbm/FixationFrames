@@ -34,7 +34,7 @@ from pyglet.window import key
 # expno: 1, 2, 3: dot frames / dot fields tasks with various numbers of trials
 
 
-def run_exp(expno=1, setup='tablet', ID=np.nan):
+def run_exp(expno=1, setup='tablet', ID=np.nan, eyetracking=False):
 
     cfg = {}
     cfg['expno'] = expno
@@ -115,7 +115,7 @@ def exportData(cfg):
 def doDotTrial(cfg):
 
     trialtype = cfg['blocks'][cfg['currentblock']]['trialtypes'][cfg['currenttrial']]
-    trialdict = cfg['conditions'][trialtype]
+    trialdict = copy.deepcopy(cfg['conditions'][trialtype])
 
     if 'record_timing' in trialdict.keys():
         record_timing = trialdict['record_timing']
@@ -714,8 +714,44 @@ def getStimuli(cfg, setup='tablet'):
                           [0., 1., 1., np.nan, np.nan, np.nan],
                           [0., 1., 1., np.nan, np.nan, np.nan],
                           [0., 1., 1., np.nan, np.nan, np.nan]], dtype=float)
+
+    # # # # # # # # # # #
+    # LIVETRACK specs
+
+    # gammaGrid = np.array([ [  0., 135.44739,  2.4203537, np.nan, np.nan, np.nan  ],
+    #                        [  0.,  27.722954, 2.4203537, np.nan, np.nan, np.nan  ],
+    #                        [  0.,  97.999275, 2.4203537, np.nan, np.nan, np.nan  ],
+    #                        [  0.,   9.235623, 2.4203537, np.nan, np.nan, np.nan  ]  ], dtype=np.float32)
+
+    # resolution = [1920, 1080] # in pixels
+    # size       = [59.8, 33.6] # in cm
+    # distance   = 49.53 # in cm
+    # screen     = 1  # index on the system: 0 = first monitor, 1 = second monitor, and so on
+
+    # # # # # # # # # # #
+
+    waitBlanking = False
+
+
+    if setup == 'livetrack':
+        gammaGrid = np.array([ [  0., 135.44739,  2.4203537, np.nan, np.nan, np.nan  ],
+                               [  0.,  27.722954, 2.4203537, np.nan, np.nan, np.nan  ],
+                               [  0.,  97.999275, 2.4203537, np.nan, np.nan, np.nan  ],
+                               [  0.,   9.235623, 2.4203537, np.nan, np.nan, np.nan  ]  ], dtype=float)
+
+        resolution = [1920, 1080] # in pixels
+        size       = [59.8, 33.6] # in cm
+        distance   = 49.53 # in cm
+        screen     = 0  # index on the system: 0 = first monitor, 1 = second monitor, and so on
+
+
     # for vertical tablet setup:
     if setup == 'tablet':
+        #gammaGrid = np.array([[0., 136.42685, 1.7472667, np.nan, np.nan, np.nan],
+        #                      [0.,  26.57937, 1.7472667, np.nan, np.nan, np.nan],
+        #                      [0., 100.41914, 1.7472667, np.nan, np.nan, np.nan],
+        #                      [0.,  9.118731, 1.7472667, np.nan, np.nan, np.nan]], dtype=float)
+
         gammaGrid = np.array([[  0., 107.28029,  2.8466334, np.nan, np.nan, np.nan],
                               [  0.,  22.207165, 2.8466334, np.nan, np.nan, np.nan],
                               [  0.,  76.29962,  2.8466334, np.nan, np.nan, np.nan],
@@ -725,6 +761,9 @@ def getStimuli(cfg, setup='tablet'):
         resolution = [1680, 1050]
         size = [47, 29.6]
         distance = 60
+        screen = 1
+
+        wacomOneCM = resolution[0] / 31.1
 
     if setup == 'laptop':
     # for my laptop:
@@ -732,6 +771,9 @@ def getStimuli(cfg, setup='tablet'):
         resolution   = [1920, 1080]
         size = [34.5, 19.5]
         distance = 40
+        screen = 1
+
+        wacomOneCM = resolution[0] / 29.5
 
 
     mymonitor = monitors.Monitor(name='temp',
@@ -750,12 +792,14 @@ def getStimuli(cfg, setup='tablet'):
     cfg['hw']['mon'] = mymonitor
 
     # first set up the window and monitor:
-    cfg['hw']['win'] = visual.Window( fullscr=True,
-                                      size=resolution,
-                                      units='deg',
-                                      waitBlanking=waitBlanking,
-                                      color=[0,0,0],
-                                      monitor=mymonitor)
+    cfg['hw']['win'] = visual.Window( fullscr      = True,
+                                      size         = resolution,
+                                      units        = 'deg',
+                                      waitBlanking = waitBlanking,
+                                      color        = [0,0,0],
+                                      monitor      = mymonitor,
+                                      screen       = screen)
+                                      # for anaglyphs: blendmode='add' !!!
 
     res = cfg['hw']['win'].size
     cfg['resolution'] = [int(x) for x in list(res)]
@@ -972,7 +1016,7 @@ def getTasks(cfg):
 
                  ]
 
-        return( dictToBlockTrials(cfg=cfg, condictionary=condictionary, nblocks=1, nrepetitions=1, shuffle=False) )
+        return( dictToBlockTrials(cfg=cfg, condictionary=condictionary, nblocks=2, nrepetitions=2, shuffle=Truee) )
         #return( dictToBlockTrials(cfg=cfg, condictionary=condictionary, nblocks=3, nrepetitions=5, shuffle=True) )
 
 
@@ -1021,61 +1065,110 @@ def foldout(a):
   return(r)
 
 
-def getParticipant(cfg, ID=np.nan, check_path=True):
+# def getParticipant(cfg, ID=np.nan, check_path=True):
 
-    print(cfg)
+#     print(cfg)
 
-    if np.isnan(ID):
-        # we need to get an integer number as participant ID:
-        IDnotANumber = True
-    else:
-        IDnotANumber = False
+#     if np.isnan(ID):
+#         # we need to get an integer number as participant ID:
+#         IDnotANumber = True
+#     else:
+#         IDnotANumber = False
+#         cfg['ID'] = ID
+#         IDno = int(ID)
+
+#     # and we will only be happy when this is the case:
+#     while (IDnotANumber):
+#         # we ask for input:
+#         ID = input('Enter participant number: ')
+#         # and try to see if we can convert it to an integer
+#         try:
+#             IDno = int(ID)
+#             if isinstance(ID, int):
+#                 pass # everything is already good
+#             # and if that integer really reflects the input
+#             if isinstance(ID, str):
+#                 if not(ID == '%d'%(IDno)):
+#                     continue
+#             # only then are we satisfied:
+#             IDnotANumber = False
+#             # and store this in the cfg
+#             cfg['ID'] = IDno
+#         except Exception as err:
+#             print(err)
+#             # if it all doesn't work, we ask for input again...
+#             pass
+
+#     # set up folder's for groups and participants to store the data
+#     if check_path:
+#         for thisPath in ['../data', '../data/probes' '../data/probes/exp_%d'%(cfg['expno']), '../data/probes/exp_%d/p%03d'%(cfg['expno'],cfg['ID'])]:
+#             if os.path.exists(thisPath):
+#                 if not(os.path.isdir(thisPath)):
+#                     os.makedirs
+#                     sys.exit('"%s" should be a folder'%(thisPath))
+#                 else:
+#                     # if participant folder exists, don't overwrite existing data?
+#                     if (thisPath == '../data/probes/exp_%d/p%03d'%(cfg['expno'],cfg['ID'])):
+#                         sys.exit('participant already exists (crash recovery not implemented)')
+#             else:
+#                 os.mkdir(thisPath)
+
+#         cfg['datadir'] = '../data/probes/exp_%d/p%03d/'%(cfg['expno'],cfg['ID'])
+
+#     # we need to seed the random number generator:
+#     random.seed(99999 * IDno)
+
+#     return cfg
+
+def getParticipant(cfg, ID=None, check_path=True):
+
+    if isinstance(ID, str):
         cfg['ID'] = ID
-        IDno = int(ID)
 
-    # and we will only be happy when this is the case:
-    while (IDnotANumber):
-        # we ask for input:
-        ID = input('Enter participant number: ')
-        # and try to see if we can convert it to an integer
-        try:
-            IDno = int(ID)
-            if isinstance(ID, int):
-                pass # everything is already good
-            # and if that integer really reflects the input
-            if isinstance(ID, str):
-                if not(ID == '%d'%(IDno)):
-                    continue
-            # only then are we satisfied:
-            IDnotANumber = False
-            # and store this in the cfg
-            cfg['ID'] = IDno
-        except Exception as err:
-            print(err)
-            # if it all doesn't work, we ask for input again...
-            pass
+    while (ID == None):
+
+        expInfo = {}
+        expInfo['ID'] = ''
+
+        #if askQuestions:
+        dlg = gui.DlgFromDict(expInfo, title='Infos')
+        if ID == None:
+            if isinstance(expInfo['ID'], str):
+                if len(expInfo['ID']) > 0:
+                    ID = expInfo['ID']
 
     # set up folder's for groups and participants to store the data
     if check_path:
-        for thisPath in ['../data', '../data/probes' '../data/probes/exp_%d'%(cfg['expno']), '../data/probes/exp_%d/p%03d'%(cfg['expno'],cfg['ID'])]:
+        # print('checking paths:')
+        for thisPath in ['../data', '../data/probes', '../data/probes/exp_%d'%(cfg['expno']), '../data/probes/exp_%d/%s'%(cfg['expno'],cfg['ID'])]:
+            # print(' - %s'%(thisPath))
             if os.path.exists(thisPath):
                 if not(os.path.isdir(thisPath)):
-                    os.makedirs
-                    sys.exit('"%s" should be a folder'%(thisPath))
+                    # os.makedirs
+                    sys.exit('"%s" should be a folder but is not'%(thisPath))
                 else:
-                    # if participant folder exists, don't overwrite existing data?
-                    if (thisPath == '../data/probes/exp_%d/p%03d'%(cfg['expno'],cfg['ID'])):
-                        sys.exit('participant already exists (crash recovery not implemented)')
+                    # if participant folder exists: do NOT overwrite existing data!
+                    if (thisPath == '../data/probes/exp_%d/%s'%(cfg['expno'],cfg['ID'])):
+                        # sys.exit('participant already exists (crash recovery not implemented)')
+                        print('participant already exists (crash recovery not implemented)')
+                        ID = None # trigger asking for ID again
+
             else:
+                # print('making folder: "%s"', thisPath)
                 os.mkdir(thisPath)
 
-        cfg['datadir'] = '../data/probes/exp_%d/p%03d/'%(cfg['expno'],cfg['ID'])
+    
+
+    # everything checks out, store in cfg:
+    cfg['ID'] = ID
+
+    # store data in folder for task / exp no / participant:
+    cfg['datadir'] = '../data/probes/exp_%d/%s/'%(cfg['expno'],cfg['ID'])
 
     # we need to seed the random number generator:
-    random.seed(99999 * IDno)
+    random.seed('compound' + ID)
 
     return cfg
-
 
 
 def cleanExit(cfg):
@@ -1100,6 +1193,31 @@ def cleanExit(cfg):
 
 
 
+if __name__ == "__main__":
 
-# run_exp(expno=int(sys.argv[1]), setup='tablet', ID=int(sys.argv[2]))
-run_exp(expno=int(sys.argv[1]), setup='tablet', ID=int(sys.argv[2]))
+    print(sys.argv)
+    print(len(sys.argv))
+
+    if len(sys.argv) > 1:
+        expno = int(sys.argv[1])
+    else:
+        expno = 1
+    
+    if len(sys.argv) > 2:
+        ID = sys.argv[2]
+    else:
+        ID = None # this will ask for an ID on the command line
+
+    if len(sys.argv) > 3:
+        eyetracking = sys.argv[3] # works if its already a bool
+        if isinstance(eyetracking, str):
+            eyetracking = eval(eyetracking)
+        if (eyetracking):
+            print('eyetracking is not implemented: ignoring')
+    else:
+        eyetracking = False
+
+    run_exp( expno       = expno, 
+             setup       = 'livetrack',
+             ID          = ID, 
+             eyetracking = False) # just NOT implemented
