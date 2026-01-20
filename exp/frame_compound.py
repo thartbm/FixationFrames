@@ -254,6 +254,8 @@ def doDotTrial(cfg):
 
 
     frameoffset = [-8,-8]
+    if cfg['expno'] in [2,3]:
+        frameoffset = [0,0]
     cfg['hw']['bluedot'].pos = [frameoffset[0],frameoffset[1]+1]
     cfg['hw']['reddot'].pos = [frameoffset[0],frameoffset[1]-1]
 
@@ -288,7 +290,7 @@ def doDotTrial(cfg):
             cfg['hw']['win'].flip()
         
         if cfg['expno'] in [2,3]:
-            if (time.time() > (trial_start_time + 3.5)):
+            if (time.time() - trial_start_time) >  ((p * 20)+blank):
                 reaction_time = 0
                 waiting_for_response = False
 
@@ -440,6 +442,22 @@ def doFrameTrial(cfg):
     #frequency = 1/copy.deepcopy(trialdict['period'])
     distance = trialdict['amplitude']
 
+    
+    if 'framesize' in trialdict.keys():
+        framesize = trialdict['framesize']
+    else:
+        framesize = [7,7]
+
+    ow = framesize[0]/2
+    oh = framesize[1]/2
+
+    iw = (framesize[0]/2)-0.5
+    ih = (framesize[1]/2)-0.5
+
+    vertices = [[[-ow,-oh],[-ow,oh],[ow,oh],[ow,-oh],[-ow,-oh]],[[-iw,-ih],[-iw,ih],[iw,ih],[iw,-ih],[-iw,-ih]]]
+
+    cfg['hw']['frame'].vertices = vertices
+
 
     if 'label' in trialdict.keys():
         label = trialdict['label']
@@ -448,6 +466,14 @@ def doFrameTrial(cfg):
 
     cfg['hw']['text'].text = label
     cfg['hw']['text'].pos = [4,4]
+
+
+    if 'fadebar' in trialdict.keys():
+        fadebar = trialdict['fadebar']
+    else:
+        fadebar = None
+
+    print(fadebar)
 
     # # change frequency and distance for static periods at the extremes:
     # if (0.35 - period) > 0:
@@ -476,15 +502,18 @@ def doFrameTrial(cfg):
     blue_on     = []
     red_on      = []
 
-    frameoffset = [-8, -8]
+    # we show a blank screen for 1/3 - 2.3 of a second (uniform dist):
+    blank = 1/3 + (random.random() * 1/3)
+    frameoffset = [-8,-8]
+    
+    if cfg['expno'] in [2,3]:
+        blank = 1/5
+        frameoffset = [0,0]
+    
     cfg['hw']['bluedot'].pos = [frameoffset[0], frameoffset[1]+1]
     cfg['hw']['reddot'].pos  = [frameoffset[0], frameoffset[1]-1]
 
-    # we show a blank screen for 1/3 - 2.3 of a second (uniform dist):
-    blank = 1/3 + (random.random() * 1/3)
 
-    if cfg['expno'] in [2,3]:
-        blank = p
 
     # the frame motion gets multiplied by -1 or 1:
     xfactor = [-1,1][random.randint(0,1)]
@@ -507,7 +536,7 @@ def doFrameTrial(cfg):
             cfg['hw']['win'].flip()
 
         if cfg['expno'] in [2,3]:
-            if (time.time() - trial_start_time) > (p * 9):
+            if (time.time() - trial_start_time) > ((p * 20)+blank):
                 reaction_time = 0
                 waiting_for_response = False
 
@@ -559,6 +588,21 @@ def doFrameTrial(cfg):
             cfg['hw']['reddot'].draw()
         if flash_blue:
             cfg['hw']['bluedot'].draw()
+
+        if fadebar != None:
+            fadetime = this_frame_time - blank
+            barop = 0
+            if fadetime <= fadebar[0]:
+                barop = fadetime/fadebar[0]
+            elif (fadetime > fadebar[0]) and (fadetime <= (fadebar[0] + fadebar[1])):
+                barop = 1
+            elif (fadetime > (fadebar[0] + fadebar[1])) and (fadetime <= np.sum(fadebar)):
+                barop = (sum(fadebar) - fadetime) / (sum(fadebar) - (fadebar[0]+fadebar[1]))
+
+            print(barop)
+            cfg['hw']['blackbar'].opacity = barop
+            cfg['hw']['blackbar'].draw()
+
 
 
         # in DEGREES:
@@ -756,6 +800,7 @@ def getStimuli(cfg, setup='tablet'):
 
     # first set up the window and monitor:
     cfg['hw']['win'] = visual.Window( fullscr=True,
+                                      screen=screen,
                                       size=resolution,
                                       units='deg',
                                       waitBlanking=waitBlanking,
@@ -854,6 +899,13 @@ def getStimuli(cfg, setup='tablet'):
     #                                        lineWidth=0,
     #                                        fillColor=[0,0,0])
 
+    cfg['hw']['blackbar'] = visual.Rect( win=cfg['hw']['win'],
+                                            width=0.2,
+                                            height=10,
+                                            units='deg',
+                                            lineColor=None,
+                                            lineWidth=0,
+                                            fillColor=[-1,-1,-1])
 
     cfg['hw']['bluedot_ref'] = visual.Circle(win=cfg['hw']['win'],
                                          units='deg',
@@ -957,35 +1009,38 @@ def getTasks(cfg):
 
         condictionary = [
 
-                 {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':0, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1, 'record_time':True, 'label':'normal'},
+
+                 {'period':1/4, 'amplitude':4.0, 'stimtype':'classicframe', 'framesize':[7,7], 'fadebar':[1,3,1], 'record_time':True, 'label':''},
+
+                #  {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':0, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1, 'record_time':True, 'label':'normal'},
                 #  {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':0, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2, 'record_time':True},
                 #  {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':0, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/4, 'record_time':True},
                 #  {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':0, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/8, 'record_time':True},
-                 {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':0, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/16, 'record_time':True, 'label':'short dot life'},
+                #  {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':0, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/16, 'record_time':True, 'label':'short dot life'},
 
                 #  {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.000, 'anglespread':0, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2, 'record_time':True},
                 #  {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.050, 'anglespread':0, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2, 'record_time':True},
                 #  {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.100, 'anglespread':0, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2, 'record_time':True},
                 #  {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.150, 'anglespread':0, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2, 'record_time':True},
-                 {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':0, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2, 'record_time':True, 'label':'variable cycling time'},
+                #  {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':0, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2, 'record_time':True, 'label':'variable cycling time'},
 
                 #  {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':0, 'amplitudespread':0.0, 'framesize':[7,7], 'maxdotlife':1/2, 'record_time':True},
                 #  {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':0, 'amplitudespread':1.0, 'framesize':[7,7], 'maxdotlife':1/2, 'record_time':True},
                 #  {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':0, 'amplitudespread':2.0, 'framesize':[7,7], 'maxdotlife':1/2, 'record_time':True},
                 #  {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':0, 'amplitudespread':4.0, 'framesize':[7,7], 'maxdotlife':1/2, 'record_time':True},
-                 {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':0, 'amplitudespread':8.0, 'framesize':[7,7], 'maxdotlife':1/2, 'record_time':True, 'label':'variable movement amplitude'},
+                #  {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':0, 'amplitudespread':8.0, 'framesize':[7,7], 'maxdotlife':1/2, 'record_time':True, 'label':'variable movement amplitude'},
 
                 #  {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':0,  'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2, 'record_time':True},
                 #  {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':10, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2, 'record_time':True},
                 #  {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':20, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2, 'record_time':True},
                 #  {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':30, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2, 'record_time':True},
-                 {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':40, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2, 'record_time':True, 'label':'variable angles of movement'},
+                #  {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':40, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2, 'record_time':True, 'label':'variable angles of movement'},
 
                 #  {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.000, 'anglespread':0,  'amplitudespread':0.0, 'framesize':[7,7], 'maxdotlife':1, 'record_time':True},
                 #  {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.050, 'anglespread':10, 'amplitudespread':1.0, 'framesize':[7,7], 'maxdotlife':1/2, 'record_time':True},
                 #  {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.100, 'anglespread':20, 'amplitudespread':2.0, 'framesize':[7,7], 'maxdotlife':1/4, 'record_time':True},
                 #  {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.150, 'anglespread':30, 'amplitudespread':4.0, 'framesize':[7,7], 'maxdotlife':1/8, 'record_time':True},
-                 {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':40, 'amplitudespread':8.0, 'framesize':[7,7], 'maxdotlife':1/16, 'record_time':True, 'label':'all combined'},
+                 {'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':90, 'amplitudespread':8.0, 'framesize':[7,7], 'maxdotlife':3/60, 'record_time':True, 'label':''},
 
 
                 #  {'period':1/4, 'amplitude':4.0, 'stimtype':'classicframe'},
