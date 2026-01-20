@@ -829,7 +829,9 @@ def getStimuli(cfg, setup='tablet'):
                                          size=[1,1],
                                          edges=180,
                                          lineWidth=0,
-                                         fillColor=[-.5,-.5,-.5],
+                                         lineColor=[-.5,-.5,-.5],
+                                        #  fillColor=[-.15,-.15,-.15],
+                                         fillColor=[.2,.2,.2],
                                          pos=[0,0])
     #np.tan(np.pi/6)*6
 
@@ -1016,7 +1018,7 @@ def getTasks(cfg):
 
                  ]
 
-        return( dictToBlockTrials(cfg=cfg, condictionary=condictionary, nblocks=2, nrepetitions=2, shuffle=Truee) )
+        return( dictToBlockTrials(cfg=cfg, condictionary=condictionary, nblocks=2, nrepetitions=2, shuffle=True) )
         #return( dictToBlockTrials(cfg=cfg, condictionary=condictionary, nblocks=3, nrepetitions=5, shuffle=True) )
 
 
@@ -1166,7 +1168,7 @@ def getParticipant(cfg, ID=None, check_path=True):
     cfg['datadir'] = '../data/probes/exp_%d/%s/'%(cfg['expno'],cfg['ID'])
 
     # we need to seed the random number generator:
-    random.seed('compound' + ID)
+    random.seed('probes' + ID)
 
     return cfg
 
