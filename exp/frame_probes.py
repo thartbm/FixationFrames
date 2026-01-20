@@ -133,7 +133,11 @@ def doDotTrial(cfg):
     else:
         probetype = 'flashed'
 
-
+    if 'label' in trialdict.keys():
+        label = trialdict['label']
+    else:
+        label = ''
+    cfg['hw']['text'].text = label
 
     # straight up copies from the PsychoJS version:
     period = trialdict['period']
@@ -954,40 +958,6 @@ def saveCfg(cfg):
 
 def getTasks(cfg):
 
-    if cfg['expno']==0:
-
-        # 1.0 - 0.3333 seconds, 12 deg motion:
-        # durations: 1.000, 0.6666, 0.5000, 0.4000 and 0.3333
-        #condictionary = [{'period':1.0, 'amplitude':12, 'stimtype':'dotbackground'},
-        #                 {'period':2/3, 'amplitude':12, 'stimtype':'dotbackground'},
-        #                 {'period':1/2, 'amplitude':12, 'stimtype':'dotbackground'},
-        #                 {'period':2/5, 'amplitude':12, 'stimtype':'dotbackground'},
-        #                 {'period':1/3, 'amplitude':12, 'stimtype':'dotbackground'},
-        #                 {'period':1/3, 'amplitude':4, 'stimtype':'dotbackground'},
-        #                 {'period':1/3, 'amplitude':6, 'stimtype':'dotbackground'},
-        #                 {'period':1/3, 'amplitude':8, 'stimtype':'dotbackground'},
-        #                 {'period':1/3, 'amplitude':10, 'stimtype':'dotbackground'},
-        #                 {'period':1/3, 'amplitude':12, 'stimtype':'dotbackground'},
-        #                 ]
-        # shorter durations:
-        # period: 1.0, 1/2, 1/3, 1/4, 1/5
-        # amplit: 2.4, 4.8, 7.2, 9.6, 12
-        # (speeds: 12, 24, 36, 48, 60 deg/s... at maximum amplitude)
-
-
-        # normal dot offset: dot_offset = np.tan(np.pi/6)*6 = 3.4641016151377544
-        # roughly 3.5?
-        condictionary = [
-                 {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'dotoffset':1, 'probetype':'flashed'},
-                 {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'dotoffset':1, 'probetype':'continuous'}
-
-
-                 ]
-
-        nblocks = 1
-        nrepetitions = 1
-
-        return( dictToBlockTrials(cfg=cfg, condictionary=condictionary, nblocks=nblocks, nrepetitions=nrepetitions) )
 
     if cfg['expno']==1:
 
@@ -1021,7 +991,37 @@ def getTasks(cfg):
         return( dictToBlockTrials(cfg=cfg, condictionary=condictionary, nblocks=2, nrepetitions=2, shuffle=True) )
         #return( dictToBlockTrials(cfg=cfg, condictionary=condictionary, nblocks=3, nrepetitions=5, shuffle=True) )
 
+    if cfg['expno']==2:
 
+        condictionary = [
+
+
+                 {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'dotoffset':0, 'probetype':'continuous', 'label':'Duncker, 1929'},
+                 {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'dotoffset':0, 'probetype':'flashed', 'label':'Wallach, 1978'},
+
+                 {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'dotoffset':.5, 'probetype':'continuous', 'label':''},
+                 {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'dotoffset':.5, 'probetype':'flashed', 'label':''},
+
+                 {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'dotoffset':1, 'probetype':'continuous', 'label':''},
+                 {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'dotoffset':1, 'probetype':'flashed', 'label':'FEAST'},
+
+                 {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'dotoffset':2, 'probetype':'continuous', 'label':''},
+                 {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'dotoffset':2, 'probetype':'flashed', 'label':''},
+
+                 {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'dotoffset':4, 'probetype':'continuous', 'label':''},
+                 {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'dotoffset':4, 'probetype':'flashed', 'label':''},
+
+
+                 # some sanity frames:
+                #  {'period':1/3, 'amplitude':3.2, 'stimtype':'classicframe'},
+                #  {'period':1/3, 'amplitude':2.4, 'stimtype':'classicframe'},
+                #  {'period':1/3, 'amplitude':1.6, 'stimtype':'classicframe'},
+                #  {'period':1/3, 'amplitude':0.8, 'stimtype':'classicframe'},
+
+                 ]
+
+        return( dictToBlockTrials(cfg=cfg, condictionary=condictionary, nblocks=1, nrepetitions=1, shuffle=False) )
+        #return( dictToBlockTrials(cfg=cfg, condictionary=condictionary, nblocks=3, nrepetitions=5, shuffle=True) )
 
 
 def dictToBlockTrials(cfg, condictionary, nblocks, nrepetitions, shuffle=True):
