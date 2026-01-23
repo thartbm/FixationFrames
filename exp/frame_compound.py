@@ -599,7 +599,7 @@ def doFrameTrial(cfg):
             elif (fadetime > (fadebar[0] + fadebar[1])) and (fadetime <= np.sum(fadebar)):
                 barop = (sum(fadebar) - fadetime) / (sum(fadebar) - (fadebar[0]+fadebar[1]))
 
-            print(barop)
+            # print(barop)
             cfg['hw']['blackbar'].opacity = barop
             cfg['hw']['blackbar'].draw()
 
@@ -849,7 +849,8 @@ def getStimuli(cfg, setup='tablet'):
     random.shuffle(ypos)
     xys = [[random.random()-0.5,y] for y in ypos]
     #colors = [[-.25,-.25,-.25],[.25,.25,.25]] * 400
-    colors = [[-.4,-.4,-.4],[-.2,-.2,-.2],[.2,.2,.2],[.4,.4,.4]] * 25
+    # colors = [[-.4,-.4,-.4],[-.2,-.2,-.2],[.2,.2,.2],[.4,.4,.4]] * 25
+    colors = [[.1,.1,.1],[.3,.3,.3],[.5,.5,.5],[.7,.7,.7]] * 25
     dotlifetimes = [random.random() * maxdotlife for x in range(ndots)]
     dotMask = np.ones([32,32])
     dotsize = 0.4
