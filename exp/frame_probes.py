@@ -232,6 +232,9 @@ def doDotTrial(cfg):
         if ( ((t + (1/30) + (p/1) ) % (2*p)) < (1.75/30) ):
             flash_blue = True
 
+        if probetype == 'continuous':
+            flash_red = False
+            flash_blue = False
         
         # truncate frame position:
         if (abs(offsetX) > (distance/2)):
@@ -833,7 +836,8 @@ def getStimuli(cfg, setup='tablet'):
                                          size=[1,1],
                                          edges=180,
                                          lineWidth=0,
-                                         lineColor=[-.5,-.5,-.5],
+                                        #  lineColor=[-.5,-.5,-.5],
+                                         lineColor=None,
                                         #  fillColor=[-.15,-.15,-.15],
                                          fillColor=[.2,.2,.2],
                                          pos=[0,0])
@@ -964,8 +968,8 @@ def getTasks(cfg):
         condictionary = [
 
 
-                 {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'dotoffset':0, 'probetype':'flashed'},
-                 {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'dotoffset':0, 'probetype':'continuous'},
+                 {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'dotoffset':.25, 'probetype':'flashed'},
+                 {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'dotoffset':.25, 'probetype':'continuous'},
 
                  {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'dotoffset':.5, 'probetype':'flashed'},
                  {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'dotoffset':.5, 'probetype':'continuous'},

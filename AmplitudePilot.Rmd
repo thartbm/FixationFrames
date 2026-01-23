@@ -182,3 +182,305 @@ legend(0,-1,legend=c('small varied', 'large varied'),
 
 ```
 
+
+various variations on limited lifetime dot frames, reducing the coherence of the dot cloud:
+
+- higher frequency of displacement
+- dots vary their own time cycle (but stay put within the average frame pause)
+- various movement amplitudes, but average is always 4 dva (up to 0 - 8 dva)
+- various ranges of angles, up to 40 degrees (-20 to +20 degrees)
+- all of them together
+- (classic framey frames with various amplitudes)
+
+
+```{r coherence-test, fig.width=6, fig.height=10}
+
+df <- read.csv("data/compound/exp_1/marius/responses.csv", stringsAsFactors = FALSE)
+df$percept <- df$percept_abs * 2 * df$xfactor
+
+layout(mat=matrix(c(1:6), nrow=3, ncol=2, byrow=TRUE))
+par(mar=c(4,4,1,.1))
+
+tests <- c('classic', 'dotlife', 'timespread', 'amplitudespread', 'anglespread', 'combined')
+
+for (test in tests) {
+  tdf <- df[which(df$test == test), ]
+  
+  xlim <- list('classic'=c(0,4),
+               'dotlife'=c(0,16),
+               'timespread'=c(0,0.200),
+               'amplitudespread'=c(0,8),
+               'anglespread'=c(0,40),
+               'combined'=c(0,8))[[test]]
+  
+  xlab <- list('classic'='amplitude',
+                 'dotlife'='displacement frequency [Hz]',
+                 'timespread'='dot time cycle offset [s]',
+                 'amplitudespread'='amplitude range [dva]',
+                 'anglespread'='angle range [deg]',
+                 'combined'='coherence')[[test]]
+  
+  plot(NULL,NULL,
+       xlim=xlim, ylim=c(0,5),
+       xlab=xlab, ylab='percept',
+       ax=F,bty='n')
+  if (test == 'classic') {
+    lines(x=c(0,4), y=c(0,4), lty=2, col='gray')
+  } else {
+    lines(x=xlim, y=c(4,4), lty=2, col='gray')
+  }
+  
+  indvar <- list('classic'='amplitude',
+                 'dotlife'='maxdotlife',
+                 'timespread'='timespread',
+                 'amplitudespread'='amplitudespread',
+                 'anglespread'='anglespread',
+                 'combined'='amplitudespread')[[test]]
+  
+  tdf$indvar <- tdf[[indvar]]
+  if (test == 'dotlife') {
+    tdf$indvar <- 1/tdf$indvar
+  }
+  
+  avg <- aggregate(percept ~ indvar, data = tdf, FUN = mean)
+  # print(avg)
+  CI  <- aggregate(percept ~ indvar, data = tdf, FUN = Reach::getConfidenceInterval, method='b')
+  polygon(c(avg$indvar, rev(avg$indvar)),
+          c(CI$percept[,1], rev(CI$percept[,2])),
+          col=adjustcolor('blue', alpha.f=0.2), border=NA)
+  lines(avg$indvar, avg$percept, type='b', lwd=2, col='blue')
+  
+  xticks <- list('classic'=c(0,0.8,1.6,2.4,3.2,4),
+                 'dotlife'=c(1,2,4,8,16),
+                 'timespread'=c(0,0.050,0.100,0.150,0.200),
+                 'amplitudespread'=c(0,2,4,6,8),
+                 'anglespread'=c(0,10,20,30,40),
+                 'combined'=c(0,2,4,6,8))[[test]]
+  
+  axis(side=1, at=xticks)
+  axis(side=2, at=c(0,1,2,3,4))
+  title(main=test)
+}
+
+```
+
+
+probe tests: does it make a difference if the probe is shown continuously, or just flashed and with various vertical offsets?
+
+
+```{r probes, fig.width=5, fig.height=5}
+df1 <- read.csv("data/probes/exp_1/demo/responses.csv", stringsAsFactors = FALSE)
+df2 <- read.csv("data/probes/exp_1/demo2/responses.csv", stringsAsFactors = FALSE)
+df <- rbind(df1, df2)
+df$percept <- df$percept_abs * 2 * df$xfactor
+idx <- which(df$dotoffset == 1 & df$probetype == 'continuous')
+df$percept[idx] <- abs(df$percept_abs[idx] * 2)
+```
+
+
+```{r probes, fig.width=5, fig.height=5}
+plot(NULL,NULL,
+     xlim=c(-.5, 4.5), ylim=c(0,5),
+     xlab="dot-offset",ylab="percept",
+     ax=F,bty='n')
+
+lines(x=c(0,4), y=c(4,4), lty=2, col='gray')
+lines(x=c(0,4), y=c(0,0), lty=2, col='gray')
+
+for (probetype in c('continuous','flashed')) {
+  
+  pdf <- df[which(df$probetype == probetype), ]
+  
+  avg <- aggregate(percept ~ dotoffset, data = pdf, FUN = mean)
+  CI  <- aggregate(percept ~ dotoffset, data = pdf, FUN = Reach::getConfidenceInterval, method='b')
+  
+  # print(avg)
+  # print(CI$percept)
+  
+  color = list('continuous'='orange', 'flashed'='purple')[[probetype]]
+  polygon(c(avg$dotoffset, rev(avg$dotoffset)),
+          c(CI$percept[,1], rev(CI$percept[,2])),
+          col=adjustcolor(color, alpha.f=0.2), border=NA)
+  lines(avg$dotoffset, avg$percept, type='b', lwd=2, col=color)
+  
+}
+
+axis(side=1, at=c(0,1,2,3,4))
+axis(side=2, at=c(0,2,4))
+
+legend( x=2, y=1.5,
+        legend=c("continous", "flashed"),
+        col=c('orange', 'purple'),
+        lwd=2, bty='n' )
+
+
+```
+
+
+
+
+
+
+
+APPARENT MOTION STUFF
+
+```{r apparent, fig.width=8, fig.height=4}
+df3 <- read.csv("data/apparent/exp_1/marius/responses.csv", stringsAsFactors = FALSE)
+df3$percept <- df3$percept_abs * 2 * df$xfactor
+
+df2 <- read.csv("data/apparent/exp_5/test/responses.csv", stringsAsFactors = FALSE)
+df2$percept <- df2$percept_abs * 2 * df2$xfactor
+
+layout(mat=matrix(c(1,2), nrow=1, ncol=2), widths=c(1,1))
+
+# amplitude plot
+
+for (df in list(df3, df2)) {
+  
+  plot(NULL,NULL,
+       xlim=c(0,5), ylim=c(0,5),
+       xlab="amplitude",ylab="percept",
+       ax=F,bty='n', asp=1)
+  
+  lines(x=c(0,5), y=c(0,5), lty=2, col='gray')
+  
+  dfa <- df[which(df$framelag == 0), ]
+  
+  for (stimtype in c('classicframe', 'apparentframe')) {
+    
+    ftdf <- dfa[which(dfa$stimtype == stimtype), ]
+    
+    avg <- aggregate(percept ~ amplitude, data = ftdf, FUN = mean)
+    CI  <- aggregate(percept ~ amplitude, data = ftdf, FUN = Reach::getConfidenceInterval, method='b')
+    # print(avg)
+    # print(CI$percept)
+    color = list('classicframe'='orange', 'apparentframe'='purple')[[stimtype]]
+    polygon(c(avg$amplitude, rev(avg$amplitude)),
+            c(CI$percept[,1], rev(CI$percept[,2])),
+            col=adjustcolor(color, alpha.f=0.2), border=NA)
+    lines(avg$amplitude, avg$percept, type='b', lwd=2, col=color)
+    
+  }
+  
+  axis(side=1, at=c(1,2,3,4))
+  axis(side=2, at=c(1,2,3,4))
+  legend( x=0, y=5,
+          legend=c("continuous motion", "apparent motion"),
+          col=c('orange', 'purple'),
+          lwd=2, bty='n' )
+}  
+
+```
+
+FRAME LAG STUFF
+
+```{r make_probe_lag_look_up}
+
+probeLagLookUp <- function(framelags, FMD, FMA, pause_duration=NULL) {
+  
+  # framelags <- c(0,2,3,4,5,6,7,8,9,10,11)
+  # 
+  # FMD <- 0.2
+  # FMA <- 4
+  
+  lagdurations <- abs(framelags/30) # framelags are at 30 Hz indeed
+  
+  probe_duration <- (2/30)/2 # check this!
+  if (is.null(pause_duration)) {
+    pause_duration <- (4/30)/2 # errrr?
+  }
+  
+  probe_spacing <- c()
+  
+  for (lagdur in lagdurations) {
+    probe_onset <- lagdur - probe_duration
+    
+    if (probe_onset < pause_duration) {
+      probe_offset <- lagdur + probe_duration
+      if (probe_offset <= pause_duration) {
+        probe_spacing <- c(probe_spacing, FMA)
+      } else {
+        static_part <- (pause_duration - probe_onset) / (2*probe_duration)
+        
+        dynamic_duration <- probe_offset - pause_duration
+        dynamic_part <- dynamic_duration / (2*probe_duration)
+        frame_pos <- FMA / (FMD) * (dynamic_duration/2)
+        
+        probe_space <- (static_part * FMA) + (dynamic_part * diff(c(frame_pos, FMA - frame_pos)))
+        probe_spacing <- c(probe_spacing, probe_space)
+      }
+    } else {
+      frame_pos <- FMA / (FMD) * (lagdur - pause_duration)
+      probe_spacing <- c(probe_spacing, diff(c(frame_pos, 4-frame_pos)))
+    }
+  }
+  
+  look.up <-  data.frame( framelag = framelags,
+                          lagduration = lagdurations,
+                          probespacing = probe_spacing )
+  return(look.up)
+}
+
+```
+
+
+
+```{r framelag, fig.width=8, fig.height=5}
+
+layout(mat=matrix(c(1,2), nrow=1, ncol=2), widths=c(1))
+
+for (df_no in c(1,2)) {
+  
+  df <- list(df3, df2)[[df_no]]
+  
+  FMD <- c(0.3, 0.2)[df_no]
+  pause_duration <- c(0.1, 2/30)[df_no]
+  
+  dfl <- df[which(df$amplitude == 4), ]
+  
+  framelags <- sort(unique(dfl$framelag))
+  
+  look.up <- probeLagLookUp(framelags = framelags,
+                            FMD = FMD,
+                            FMA = 4,
+                            pause_duration = pause_duration)
+  
+  dfl$relprobedist <- NA
+  for (fl in framelags) {
+    dfl$relprobedist[which(dfl$framelag == fl)] <- look.up$probespacing[which(look.up$framelag == fl)]
+  }
+  
+  plot(NULL,NULL,
+       xlim=c(-4,4), ylim=c(-4,4),
+       xlab="probe offset in frame",ylab="percept",
+       ax=F,bty='n')
+  
+  lines(x=c(-4,4), y=c(-4,4), lty=2, col='gray')
+  lines(x=c(-4,4), y=c(0,0), lty=2, col='gray')
+  lines(x=c(0,-0), y=c(-4,4), lty=2, col='gray')
+  
+  for (stimtype in c('classicframe', 'apparentframe')) {
+    
+    ltdf <- dfl[which(dfl$stimtype == stimtype), ]
+    
+    avg <- aggregate(percept ~ relprobedist, data = ltdf, FUN = mean)
+    CI  <- aggregate(percept ~ relprobedist, data = ltdf, FUN = Reach::getConfidenceInterval, method='b')
+    # print(avg)
+    # print(CI$percept)
+    color = list('classicframe'='orange', 'apparentframe'='purple')[[stimtype]]
+    polygon(c(avg$relprobedist, rev(avg$relprobedist)),
+            c(CI$percept[,1], rev(CI$percept[,2])),
+            col=adjustcolor(color, alpha.f=0.2), border=NA)
+    lines(avg$relprobedist, avg$percept, type='b', lwd=2, col=color)
+    
+  }
+  
+  axis(side=1, at=c(-4, -2, 0, 2, 4))
+  axis(side=2, at=c(-4, -2, 0, 2, 4))
+  legend( x=-4, y=4,
+          legend=c("continuous motion", "apparent motion"),
+          col=c('orange', 'purple'),
+          lwd=2, bty='n' )
+}
+```
+
