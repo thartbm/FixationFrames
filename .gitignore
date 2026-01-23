@@ -211,3 +211,6 @@ __marimo__/
 *.mp4
 .Rproj.user
 .Rhistory
+
+*.Rmd
+*.png
