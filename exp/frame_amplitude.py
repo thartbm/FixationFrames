@@ -214,10 +214,13 @@ def doTrial(cfg):
             # gaze = cfg['hw']['tracker'].lastsample()
             # print(gaze)
             # showStimulus = ((gaze[0] - frameoffset)**2 + (gaze[1]+2)**2)**0.5 <= 2.0
-            if gazeInFixationWindow(self, fixloc=[frameoffset,-2]):
-                showStimulus = True
+            if showFixation:
+                if gazeInFixationWindow(self, fixloc=[frameoffset,-2]):
+                    showStimulus = True
+                else:
+                    showStimulus = False
             else:
-                showStimulus = False
+                showStimulus = True
         else:
             showStimulus = True
 
