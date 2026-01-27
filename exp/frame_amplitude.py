@@ -446,6 +446,17 @@ def getStimuli(cfg, setup='tablet'):
                                         units='deg'
                                         )
 
+
+
+    cfg['hw']['crosses'] = []
+    for cross in range(11):
+        cfg['hw']['crosses'] += [
+            visual.ImageStim(   win=cfg['hw']['win'],
+                                image='cross.png',
+                                mask='gauss',
+                                size=[1,1])
+        ]
+
     return(cfg)
 
 # def makeMultiFrame(cfg, width=7, height=7, pos=[0,0], col=[1,1,1], units='deg'):

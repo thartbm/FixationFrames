@@ -1286,7 +1286,7 @@ class EyeTracker:
     # endregion
 
 
-    def gazeInFixationWindow(self):
+    def gazeInFixationWindow(self, fixloc=[0,0]):
 
         sample = self.lastsample()
         check_samples = self.getSamplesToCheck()
@@ -1295,7 +1295,7 @@ class EyeTracker:
             if cs in sample.keys():
                 if any(np.isnan(sample[cs])):
                     return(False) # return False if there is a nan value
-                d = np.sqrt(np.sum(np.array(sample[cs])**2))
+                d = np.sqrt(np.sum((np.array(sample[cs])-np.array(fixloc))**2))
                 if d > self.fixationWindow:
                     return(False) # return false if the distance from fixation is larger than 2 (or whatever the fixation window is)
             else:
