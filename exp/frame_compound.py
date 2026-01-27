@@ -1054,6 +1054,51 @@ def getTasks(cfg):
         return( dictToBlockTrials(cfg=cfg, condictionary=condictionary, nblocks=1, nrepetitions=1, shuffle=False) )
 
 
+    if cfg['expno']==5:
+
+        condictionary = [
+
+                #  {'test':'dotlife', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':0, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1},
+                #  {'test':'dotlife', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':0, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2},
+                #  {'test':'dotlife', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':0, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/4},
+                #  {'test':'dotlife', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':0, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/8},
+                #  {'test':'dotlife', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':0, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/16},
+
+                #  {'test':'timespread', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.000, 'anglespread':0, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2},
+                #  {'test':'timespread', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.050, 'anglespread':0, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2},
+                #  {'test':'timespread', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.100, 'anglespread':0, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2},
+                #  {'test':'timespread', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.150, 'anglespread':0, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2},
+                #  {'test':'timespread', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':0, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2},
+
+                #  {'test':'amplitudespread', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':0, 'amplitudespread':0.0, 'framesize':[7,7], 'maxdotlife':1/2},
+                #  {'test':'amplitudespread', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':0, 'amplitudespread':1.0, 'framesize':[7,7], 'maxdotlife':1/2},
+                #  {'test':'amplitudespread', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':0, 'amplitudespread':2.0, 'framesize':[7,7], 'maxdotlife':1/2},
+                #  {'test':'amplitudespread', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':0, 'amplitudespread':4.0, 'framesize':[7,7], 'maxdotlife':1/2},
+                #  {'test':'amplitudespread', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':0, 'amplitudespread':8.0, 'framesize':[7,7], 'maxdotlife':1/2},
+
+                #  {'test':'anglespread', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':0,  'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2},
+                #  {'test':'anglespread', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':10, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2},
+                #  {'test':'anglespread', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':20, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2},
+                #  {'test':'anglespread', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':30, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2},
+                #  {'test':'anglespread', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':40, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2},
+
+                 {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':90, 'amplitudespread':4.0, 'framesize':[7,7], 'maxdotlife':1/8},
+                 {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':90, 'amplitudespread':6.0, 'framesize':[7,7], 'maxdotlife':1/8},
+                 {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':90, 'amplitudespread':8.0, 'framesize':[7,7], 'maxdotlife':1/8},
+                 {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':90, 'amplitudespread':10.0, 'framesize':[7,7], 'maxdotlife':1/8},
+                 {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':90, 'amplitudespread':12.0, 'framesize':[7,7], 'maxdotlife':1/8},
+
+
+                #  {'test':'classic', 'period':1/4, 'amplitude':4.0, 'stimtype':'classicframe'},
+                #  {'test':'classic', 'period':1/4, 'amplitude':3.2, 'stimtype':'classicframe'},
+                #  {'test':'classic', 'period':1/4, 'amplitude':2.4, 'stimtype':'classicframe'},
+                #  {'test':'classic', 'period':1/4, 'amplitude':1.6, 'stimtype':'classicframe'},
+                #  {'test':'classic', 'period':1/4, 'amplitude':0.8, 'stimtype':'classicframe'},
+                 ]
+
+
+        return( dictToBlockTrials(cfg=cfg, condictionary=condictionary, nblocks=1, nrepetitions=1, shuffle=False) )
+
 
 def dictToBlockTrials(cfg, condictionary, nblocks, nrepetitions, shuffle=True):
 
