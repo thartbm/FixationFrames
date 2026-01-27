@@ -1082,11 +1082,11 @@ def getTasks(cfg):
                 #  {'test':'anglespread', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':30, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2},
                 #  {'test':'anglespread', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':40, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2},
 
-                 {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':30, 'amplitudespread':4.0, 'framesize':[7,7], 'maxdotlife':1/8},
-                 {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':30, 'amplitudespread':8.0, 'framesize':[7,7], 'maxdotlife':1/8},
-                 {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':30, 'amplitudespread':12.0, 'framesize':[7,7], 'maxdotlife':1/8},
-                 {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':30, 'amplitudespread':16.0, 'framesize':[7,7], 'maxdotlife':1/8},
-                 {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':30, 'amplitudespread':20.0, 'framesize':[7,7], 'maxdotlife':1/8},
+                 {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':10, 'amplitudespread':4.0, 'framesize':[7,7], 'maxdotlife':1/8},
+                 {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':10, 'amplitudespread':8.0, 'framesize':[7,7], 'maxdotlife':1/8},
+                 {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':10, 'amplitudespread':12.0, 'framesize':[7,7], 'maxdotlife':1/8},
+                 {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':10, 'amplitudespread':16.0, 'framesize':[7,7], 'maxdotlife':1/8},
+                 {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':10, 'amplitudespread':20.0, 'framesize':[7,7], 'maxdotlife':1/8},
 
 
                 #  {'test':'classic', 'period':1/4, 'amplitude':4.0, 'stimtype':'classicframe'},
