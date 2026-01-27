@@ -62,7 +62,10 @@ def doDotTrial(cfg):
     else:
         pauseframes = 4
 
-
+    if 'probeduration' in trialdict.keys():
+        probedur = trialdict['probeduration']
+    else:
+        probedur = 2/30
 
 
 
@@ -114,7 +117,7 @@ def doDotTrial(cfg):
 
     # the frame motion gets multiplied by -1 or 1:
     xfactor = [-1,1][random.randint(0,1)]
-    xfactor = 1
+    # xfactor = 1
     if cfg['expno'] in [2,3]:
         xfactor = 1
 
@@ -156,9 +159,9 @@ def doDotTrial(cfg):
         flash_frame = False
 
         # flash any dots?
-        if ( ((t + (1/30) - (probelag/30)) % (2*p)) < (1.999/30)):
+        if ( ((t + (probedur/2) - (probelag/30)) % (2*p)) < (probedur*0.999)):
             flash_red = True
-        if ( ((t + (1/30) + p - (probelag/30)) % (2*p)) < (1.999/30) ):
+        if ( ((t + (probedur/2) + p - (probelag/30)) % (2*p)) < (probedur*0.999) ):
             flash_blue = True
 
         # do this with the next block of code instead?
@@ -239,8 +242,9 @@ def doDotTrial(cfg):
         response['xfactor']     = xfactor
         response['RT']          = reaction_time
         response['percept_abs'] = percept
-        response['percept_rel'] = percept/3
-        response['percept_scl'] = (percept/3)*cfg['dot_offset']*2
+        # response['percept_rel'] = percept/3
+        # response['percept_scl'] = (percept/3)*cfg['dot_offset']*2
+        response['percept']     = percept * 2 * xfactor
         response['trial_start'] = trial_start_time
         response['blank']       = blank
 
@@ -526,39 +530,299 @@ def getTasks(cfg):
         condictionary = [
 
                          # classic frame with 10 lags
-                         {'period':0.20, 'amplitude':4, 'stimtype':'classicframe', 'probelag': 0, 'pauseframes':4},
-                        #  {'period':0.20, 'amplitude':4, 'stimtype':'classicframe', 'probelag': 2, 'pauseframes':4},
-                         {'period':0.20, 'amplitude':4, 'stimtype':'classicframe', 'probelag': 3, 'pauseframes':4},
-                         {'period':0.20, 'amplitude':4, 'stimtype':'classicframe', 'probelag': 4, 'pauseframes':4},
-                         {'period':0.20, 'amplitude':4, 'stimtype':'classicframe', 'probelag': 5, 'pauseframes':4},
-                         {'period':0.20, 'amplitude':4, 'stimtype':'classicframe', 'probelag': 6, 'pauseframes':4},
-                         {'period':0.20, 'amplitude':4, 'stimtype':'classicframe', 'probelag': 7, 'pauseframes':4},
+                         {'test':'lag', 'period':0.20, 'amplitude':4, 'stimtype':'classicframe', 'probelag': 0, 'pauseframes':4}, #0
+                         {'test':'lag', 'period':0.20, 'amplitude':4, 'stimtype':'classicframe', 'probelag': 2, 'pauseframes':4},
+                         {'test':'lag', 'period':0.20, 'amplitude':4, 'stimtype':'classicframe', 'probelag': 3, 'pauseframes':4},
+                         {'test':'lag', 'period':0.20, 'amplitude':4, 'stimtype':'classicframe', 'probelag': 4, 'pauseframes':4},
+                         {'test':'lag', 'period':0.20, 'amplitude':4, 'stimtype':'classicframe', 'probelag': 5, 'pauseframes':4},
+                         {'test':'lag', 'period':0.20, 'amplitude':4, 'stimtype':'classicframe', 'probelag': 6, 'pauseframes':4},
+                         {'test':'lag', 'period':0.20, 'amplitude':4, 'stimtype':'classicframe', 'probelag': 7, 'pauseframes':4},
+                         {'test':'lag', 'period':0.20, 'amplitude':4, 'stimtype':'classicframe', 'probelag': 8, 'pauseframes':4}, # 7
                          
-                         # alternative amplitudes:
-                         {'period':0.20, 'amplitude':3, 'stimtype':'classicframe', 'probelag': 0, 'pauseframes':4},
-                         {'period':0.20, 'amplitude':2, 'stimtype':'classicframe', 'probelag': 0, 'pauseframes':4},
-                         {'period':0.20, 'amplitude':1, 'stimtype':'classicframe', 'probelag': 0, 'pauseframes':4},
+                        #  # alternative amplitudes:
+                        #  {'test':'lag', 'period':0.20, 'amplitude':3, 'stimtype':'classicframe', 'probelag': 0, 'pauseframes':4},
+                        #  {'test':'lag', 'period':0.20, 'amplitude':2, 'stimtype':'classicframe', 'probelag': 0, 'pauseframes':4},
+                        #  {'test':'lag', 'period':0.20, 'amplitude':1, 'stimtype':'classicframe', 'probelag': 0, 'pauseframes':4},
 
                          # apparent frame with the same 10 lags as before
-                         {'period':0.20, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': 0, 'pauseframes':4},
-                        #  {'period':0.20, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': 2, 'pauseframes':4},
-                         {'period':0.20, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': 3, 'pauseframes':4},
-                         {'period':0.20, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': 4, 'pauseframes':4},
-                         {'period':0.20, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': 5, 'pauseframes':4},
-                         {'period':0.20, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': 6, 'pauseframes':4},
-                         {'period':0.20, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': 7, 'pauseframes':4},
+                         {'test':'lag', 'period':0.20, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': 0, 'pauseframes':4}, # 8
+                         {'test':'lag', 'period':0.20, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': 2, 'pauseframes':4},
+                         {'test':'lag', 'period':0.20, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': 3, 'pauseframes':4},
+                         {'test':'lag', 'period':0.20, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': 4, 'pauseframes':4},
+                         {'test':'lag', 'period':0.20, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': 5, 'pauseframes':4},
+                         {'test':'lag', 'period':0.20, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': 6, 'pauseframes':4},
+                         {'test':'lag', 'period':0.20, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': 7, 'pauseframes':4},
+                         {'test':'lag', 'period':0.20, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': 8, 'pauseframes':4}, # 15
 
-                         # apparent frame with alternative amplitudes:
-                         {'period':0.20, 'amplitude':3, 'stimtype':'apparentframe', 'probelag': 0, 'pauseframes':4},
-                         {'period':0.20, 'amplitude':2, 'stimtype':'apparentframe', 'probelag': 0, 'pauseframes':4},
-                         {'period':0.20, 'amplitude':1, 'stimtype':'apparentframe', 'probelag': 0, 'pauseframes':4}
+                        #  # apparent frame with alternative amplitudes:
+                        #  {'test':'lag', 'period':0.20, 'amplitude':3, 'stimtype':'apparentframe', 'probelag': 0, 'pauseframes':4},
+                        #  {'test':'lag', 'period':0.20, 'amplitude':2, 'stimtype':'apparentframe', 'probelag': 0, 'pauseframes':4},
+                        #  {'test':'lag', 'period':0.20, 'amplitude':1, 'stimtype':'apparentframe', 'probelag': 0, 'pauseframes':4}
+
+                         {'test':'lag', 'period':0.30, 'amplitude':4, 'stimtype':'classicframe', 'probelag': 0, 'pauseframes':4}, # 16
+                        #  {'test':'lag', 'period':0.30, 'amplitude':4, 'stimtype':'classicframe', 'probelag': 2, 'pauseframes':4},
+                         {'test':'lag', 'period':0.30, 'amplitude':4, 'stimtype':'classicframe', 'probelag': 3, 'pauseframes':4},
+                        #  {'test':'lag', 'period':0.30, 'amplitude':4, 'stimtype':'classicframe', 'probelag': 4, 'pauseframes':4},
+                         {'test':'lag', 'period':0.30, 'amplitude':4, 'stimtype':'classicframe', 'probelag': 5, 'pauseframes':4},
+                        #  {'test':'lag', 'period':0.30, 'amplitude':4, 'stimtype':'classicframe', 'probelag': 6, 'pauseframes':4},
+                         {'test':'lag', 'period':0.30, 'amplitude':4, 'stimtype':'classicframe', 'probelag': 7, 'pauseframes':4},
+                        #  {'test':'lag', 'period':0.30, 'amplitude':4, 'stimtype':'classicframe', 'probelag': 8, 'pauseframes':4},
+                         {'test':'lag', 'period':0.30, 'amplitude':4, 'stimtype':'classicframe', 'probelag': 9, 'pauseframes':4},
+                        #  {'test':'lag', 'period':0.30, 'amplitude':4, 'stimtype':'classicframe', 'probelag': 10, 'pauseframes':4},
+                         {'test':'lag', 'period':0.30, 'amplitude':4, 'stimtype':'classicframe', 'probelag': 11, 'pauseframes':4}, # 21
+                         
+                         # apparent frame with the same 10 lags as before
+                         {'test':'lag', 'period':0.30, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': 0, 'pauseframes':4}, # 22
+                        #  {'test':'lag', 'period':0.30, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': 2, 'pauseframes':4},
+                         {'test':'lag', 'period':0.30, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': 3, 'pauseframes':4},
+                        #  {'test':'lag', 'period':0.30, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': 4, 'pauseframes':4},
+                         {'test':'lag', 'period':0.30, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': 5, 'pauseframes':4},
+                        #  {'test':'lag', 'period':0.30, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': 6, 'pauseframes':4},
+                         {'test':'lag', 'period':0.30, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': 7, 'pauseframes':4},
+                        #  {'test':'lag', 'period':0.30, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': 8, 'pauseframes':4},
+                         {'test':'lag', 'period':0.30, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': 9, 'pauseframes':4},
+                        #  {'test':'lag', 'period':0.30, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': 10, 'pauseframes':4},
+                         {'test':'lag', 'period':0.30, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': 11, 'pauseframes':4},  # 27
+
+                         # # # #   LEADS  # # # #
+
+                         # classic frame with leads
+                         {'test':'lead', 'period':0.20, 'amplitude':4, 'stimtype':'classicframe', 'probelag': -0, 'pauseframes':4}, # 28
+                         {'test':'lead', 'period':0.20, 'amplitude':4, 'stimtype':'classicframe', 'probelag': -2, 'pauseframes':4},
+                         {'test':'lead', 'period':0.20, 'amplitude':4, 'stimtype':'classicframe', 'probelag': -3, 'pauseframes':4},
+                         {'test':'lead', 'period':0.20, 'amplitude':4, 'stimtype':'classicframe', 'probelag': -4, 'pauseframes':4},
+                         {'test':'lead', 'period':0.20, 'amplitude':4, 'stimtype':'classicframe', 'probelag': -5, 'pauseframes':4},
+                         {'test':'lead', 'period':0.20, 'amplitude':4, 'stimtype':'classicframe', 'probelag': -6, 'pauseframes':4},
+                         {'test':'lead', 'period':0.20, 'amplitude':4, 'stimtype':'classicframe', 'probelag': -7, 'pauseframes':4},
+                         {'test':'lead', 'period':0.20, 'amplitude':4, 'stimtype':'classicframe', 'probelag': -8, 'pauseframes':4}, # 35
+                         
+
+                         # apparent frame with the same 10 leads as before ---- SDHOULD BE LEADS!!!!! (logged as lags originally)
+                         {'test':'lead', 'period':0.20, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': -0, 'pauseframes':4}, # 36
+                         {'test':'lead', 'period':0.20, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': -2, 'pauseframes':4},
+                         {'test':'lead', 'period':0.20, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': -3, 'pauseframes':4},
+                         {'test':'lead', 'period':0.20, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': -4, 'pauseframes':4}, # !!!!!
+                         {'test':'lead', 'period':0.20, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': -5, 'pauseframes':4},
+                         {'test':'lead', 'period':0.20, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': -6, 'pauseframes':4},
+                         {'test':'lead', 'period':0.20, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': -7, 'pauseframes':4},
+                         {'test':'lead', 'period':0.20, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': -8, 'pauseframes':4}, # 43
+
+                         # classic frame with 300 ms movement (no apparent motion) and leads
+                         {'test':'lead', 'period':0.30, 'amplitude':4, 'stimtype':'classicframe', 'probelag': -0, 'pauseframes':4},
+                         {'test':'lead', 'period':0.30, 'amplitude':4, 'stimtype':'classicframe', 'probelag': -3, 'pauseframes':4},
+                         {'test':'lead', 'period':0.30, 'amplitude':4, 'stimtype':'classicframe', 'probelag': -5, 'pauseframes':4},
+                         {'test':'lead', 'period':0.30, 'amplitude':4, 'stimtype':'classicframe', 'probelag': -7, 'pauseframes':4},
+                         {'test':'lead', 'period':0.30, 'amplitude':4, 'stimtype':'classicframe', 'probelag': -9, 'pauseframes':4},
+                         {'test':'lead', 'period':0.30, 'amplitude':4, 'stimtype':'classicframe', 'probelag': -11, 'pauseframes':4},
+                         
+                         # apparent frame with the same leads as before and the 300 ms movement
+                         {'test':'lead', 'period':0.30, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': -0, 'pauseframes':4},
+                         {'test':'lead', 'period':0.30, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': -3, 'pauseframes':4},
+                         {'test':'lead', 'period':0.30, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': -5, 'pauseframes':4},
+                         {'test':'lead', 'period':0.30, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': -7, 'pauseframes':4},
+                         {'test':'lead', 'period':0.30, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': -9, 'pauseframes':4},
+                         {'test':'lead', 'period':0.30, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': -11, 'pauseframes':4},
 
                          ]
                          
 
-        return( dictToBlockTrials(cfg=cfg, condictionary=condictionary, nblocks=1, nrepetitions=1, shuffle=False) )
+        return( dictToBlockTrials(cfg=cfg, condictionary=condictionary, nblocks=3, nrepetitions=1, shuffle=True) )
         # return( dictToBlockTrials(cfg=cfg, condictionary=condictionary, nblocks=3, nrepetitions=2) )
 
+
+    if cfg['expno']==6:
+
+        condictionary = [
+
+                        #  # classic frame with 10 lags
+                        #  {'test':'lag', 'period':0.20, 'amplitude':4, 'stimtype':'classicframe', 'probelag': 0, 'pauseframes':4}, # 
+                        #  {'test':'lag', 'period':0.20, 'amplitude':4, 'stimtype':'classicframe', 'probelag': 2, 'pauseframes':4},
+                        #  {'test':'lag', 'period':0.20, 'amplitude':4, 'stimtype':'classicframe', 'probelag': 3, 'pauseframes':4},
+                        #  {'test':'lag', 'period':0.20, 'amplitude':4, 'stimtype':'classicframe', 'probelag': 4, 'pauseframes':4},
+                        #  {'test':'lag', 'period':0.20, 'amplitude':4, 'stimtype':'classicframe', 'probelag': 5, 'pauseframes':4},
+                         
+                        #  # apparent frame with the same 10 lags as before
+                        #  {'test':'lag', 'period':0.20, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': 0, 'pauseframes':4}, # 
+                        #  {'test':'lag', 'period':0.20, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': 2, 'pauseframes':4},
+                        #  {'test':'lag', 'period':0.20, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': 3, 'pauseframes':4},
+                        #  {'test':'lag', 'period':0.20, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': 4, 'pauseframes':4},
+                        #  {'test':'lag', 'period':0.20, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': 5, 'pauseframes':4},
+
+                        #  # same but LEADS
+
+                        #  # classic frame
+                        #  {'test':'lead', 'period':0.20, 'amplitude':4, 'stimtype':'classicframe', 'probelag': -0, 'pauseframes':4}, # 
+                        #  {'test':'lead', 'period':0.20, 'amplitude':4, 'stimtype':'classicframe', 'probelag': -2, 'pauseframes':4},
+                        #  {'test':'lead', 'period':0.20, 'amplitude':4, 'stimtype':'classicframe', 'probelag': -3, 'pauseframes':4},
+                        #  {'test':'lead', 'period':0.20, 'amplitude':4, 'stimtype':'classicframe', 'probelag': -4, 'pauseframes':4},
+                        #  {'test':'lead', 'period':0.20, 'amplitude':4, 'stimtype':'classicframe', 'probelag': -5, 'pauseframes':4},
+                         
+                        #  # apparent frame
+                        #  {'test':'lead', 'period':0.20, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': -0, 'pauseframes':4}, # 
+                        #  {'test':'lead', 'period':0.20, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': -2, 'pauseframes':4},
+                        #  {'test':'lead', 'period':0.20, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': -3, 'pauseframes':4},
+                        #  {'test':'lead', 'period':0.20, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': -4, 'pauseframes':4},
+                        #  {'test':'lead', 'period':0.20, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': -5, 'pauseframes':4},
+
+                         # DOUBLE DURATION
+                         #
+                         # 100 ms lags: 0, 2, 1+sqrt(2), 3.5, 3
+                         #
+                         # 1+sqrt(2) might be more stable when set to 2.5 (although not the same relative timepoint)
+                         #
+                         # 200 ms lags: 0, 2, 3, 4, 5 # starting point
+                         #
+                         # 400 ms lags: 0, 2, 4, 6, 8
+                         # 600 ms lags: 0, 2, 5, 8, 11
+
+                        #  # classic frame with 10 lags
+                        #  {'test':'lag', 'period':0.40, 'amplitude':4, 'stimtype':'classicframe', 'probelag': 0, 'pauseframes':4}, # 
+                        #  {'test':'lag', 'period':0.40, 'amplitude':4, 'stimtype':'classicframe', 'probelag': 2, 'pauseframes':4},
+                        #  {'test':'lag', 'period':0.40, 'amplitude':4, 'stimtype':'classicframe', 'probelag': 4, 'pauseframes':4},
+                        #  {'test':'lag', 'period':0.40, 'amplitude':4, 'stimtype':'classicframe', 'probelag': 6, 'pauseframes':4},
+                        #  {'test':'lag', 'period':0.40, 'amplitude':4, 'stimtype':'classicframe', 'probelag': 8, 'pauseframes':4},
+                         
+                        #  # apparent frame with the same 10 lags as before
+                        #  {'test':'lag', 'period':0.40, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': 0, 'pauseframes':4}, # 
+                        #  {'test':'lag', 'period':0.40, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': 2, 'pauseframes':4},
+                        #  {'test':'lag', 'period':0.40, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': 4, 'pauseframes':4},
+                        #  {'test':'lag', 'period':0.40, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': 5, 'pauseframes':4},
+                        #  {'test':'lag', 'period':0.40, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': 8, 'pauseframes':4},
+
+                        #  # same but LEADS
+
+                        #  # classic frame
+                        #  {'test':'lead', 'period':0.40, 'amplitude':4, 'stimtype':'classicframe', 'probelag': -0, 'pauseframes':4}, # 
+                        #  {'test':'lead', 'period':0.40, 'amplitude':4, 'stimtype':'classicframe', 'probelag': -2, 'pauseframes':4},
+                        #  {'test':'lead', 'period':0.40, 'amplitude':4, 'stimtype':'classicframe', 'probelag': -4, 'pauseframes':4},
+                        #  {'test':'lead', 'period':0.40, 'amplitude':4, 'stimtype':'classicframe', 'probelag': -6, 'pauseframes':4},
+                        #  {'test':'lead', 'period':0.40, 'amplitude':4, 'stimtype':'classicframe', 'probelag': -8, 'pauseframes':4},
+                         
+                        #  # apparent frame
+                        #  {'test':'lead', 'period':0.40, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': -0, 'pauseframes':4}, # 
+                        #  {'test':'lead', 'period':0.40, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': -2, 'pauseframes':4},
+                        #  {'test':'lead', 'period':0.40, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': -4, 'pauseframes':4},
+                        #  {'test':'lead', 'period':0.40, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': -6, 'pauseframes':4},
+                        #  {'test':'lead', 'period':0.40, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': -8, 'pauseframes':4},
+
+
+
+
+
+                        #  # classic frame with 10 lags
+                        #  {'test':'lag', 'period':0.60, 'amplitude':4, 'stimtype':'classicframe', 'probelag': 0, 'pauseframes':4}, # 
+                        #  {'test':'lag', 'period':0.60, 'amplitude':4, 'stimtype':'classicframe', 'probelag': 2, 'pauseframes':4},
+                        #  {'test':'lag', 'period':0.60, 'amplitude':4, 'stimtype':'classicframe', 'probelag': 5, 'pauseframes':4},
+                        #  {'test':'lag', 'period':0.60, 'amplitude':4, 'stimtype':'classicframe', 'probelag': 8, 'pauseframes':4},
+                        #  {'test':'lag', 'period':0.60, 'amplitude':4, 'stimtype':'classicframe', 'probelag': 11, 'pauseframes':4},
+                         
+                        #  # apparent frame with the same 10 lags as before
+                        #  {'test':'lag', 'period':0.60, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': 0, 'pauseframes':4}, # 
+                        #  {'test':'lag', 'period':0.60, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': 2, 'pauseframes':4},
+                        #  {'test':'lag', 'period':0.60, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': 5, 'pauseframes':4},
+                        #  {'test':'lag', 'period':0.60, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': 8, 'pauseframes':4},
+                        #  {'test':'lag', 'period':0.60, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': 11, 'pauseframes':4},
+
+                        #  # same but LEADS
+
+                        #  # classic frame
+                        #  {'test':'lead', 'period':0.60, 'amplitude':4, 'stimtype':'classicframe', 'probelag': -0, 'pauseframes':4}, # 
+                        #  {'test':'lead', 'period':0.60, 'amplitude':4, 'stimtype':'classicframe', 'probelag': -2, 'pauseframes':4},
+                        #  {'test':'lead', 'period':0.60, 'amplitude':4, 'stimtype':'classicframe', 'probelag': -5, 'pauseframes':4},
+                        #  {'test':'lead', 'period':0.60, 'amplitude':4, 'stimtype':'classicframe', 'probelag': -8, 'pauseframes':4},
+                        #  {'test':'lead', 'period':0.60, 'amplitude':4, 'stimtype':'classicframe', 'probelag': -11, 'pauseframes':4},
+                         
+                        #  # apparent frame
+                        #  {'test':'lead', 'period':0.60, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': -0, 'pauseframes':4}, # 
+                        #  {'test':'lead', 'period':0.60, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': -2, 'pauseframes':4},
+                        #  {'test':'lead', 'period':0.60, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': -5, 'pauseframes':4},
+                        #  {'test':'lead', 'period':0.60, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': -8, 'pauseframes':4},
+                        #  {'test':'lead', 'period':0.60, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': -11, 'pauseframes':4},
+
+                         # classic frame with 10 lags
+                         {'test':'lag', 'period':0.10, 'amplitude':4, 'stimtype':'classicframe', 'probelag': 0, 'pauseframes':4}, # 
+                         {'test':'lag', 'period':0.10, 'amplitude':4, 'stimtype':'classicframe', 'probelag': 2, 'pauseframes':4},
+                         {'test':'lag', 'period':0.10, 'amplitude':4, 'stimtype':'classicframe', 'probelag': 2.5, 'pauseframes':4},
+                         {'test':'lag', 'period':0.10, 'amplitude':4, 'stimtype':'classicframe', 'probelag': 3, 'pauseframes':4},
+                         {'test':'lag', 'period':0.10, 'amplitude':4, 'stimtype':'classicframe', 'probelag': 3.5, 'pauseframes':4},
+                         
+                         # apparent frame with the same 10 lags as before
+                         {'test':'lag', 'period':0.10, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': 0, 'pauseframes':4}, # 
+                         {'test':'lag', 'period':0.10, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': 2, 'pauseframes':4},
+                         {'test':'lag', 'period':0.10, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': 2.5, 'pauseframes':4},
+                         {'test':'lag', 'period':0.10, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': 3, 'pauseframes':4},
+                         {'test':'lag', 'period':0.10, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': 3.5, 'pauseframes':4},
+
+                         # same but LEADS
+
+                         # classic frame
+                         {'test':'lead', 'period':0.10, 'amplitude':4, 'stimtype':'classicframe', 'probelag': -0, 'pauseframes':4}, # 
+                         {'test':'lead', 'period':0.10, 'amplitude':4, 'stimtype':'classicframe', 'probelag': -2, 'pauseframes':4},
+                         {'test':'lead', 'period':0.10, 'amplitude':4, 'stimtype':'classicframe', 'probelag': -2.5, 'pauseframes':4},
+                         {'test':'lead', 'period':0.10, 'amplitude':4, 'stimtype':'classicframe', 'probelag': -3, 'pauseframes':4},
+                         {'test':'lead', 'period':0.10, 'amplitude':4, 'stimtype':'classicframe', 'probelag': -3.5, 'pauseframes':4},
+                         
+                         # apparent frame
+                         {'test':'lead', 'period':0.10, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': -0, 'pauseframes':4}, # 
+                         {'test':'lead', 'period':0.10, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': -2, 'pauseframes':4},
+                         {'test':'lead', 'period':0.10, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': -2.5, 'pauseframes':4},
+                         {'test':'lead', 'period':0.10, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': -3, 'pauseframes':4},
+                         {'test':'lead', 'period':0.10, 'amplitude':4, 'stimtype':'apparentframe', 'probelag': -3.5, 'pauseframes':4},
+
+                         ]
+                         
+
+        return( dictToBlockTrials(cfg=cfg, condictionary=condictionary, nblocks=3, nrepetitions=1, shuffle=True) )
+
+
+
+    if cfg['expno']==7:
+
+        condictionary = [
+
+                        # PROBE 2/30
+                        #  # classic frame lags
+                         {'test':'lag', 'period':0.20, 'amplitude':4, 'stimtype':'classicframe', 'probelag': 0, 'pauseframes':4, 'probeduration':2/30}, # 
+                         {'test':'lag', 'period':0.20, 'amplitude':4, 'stimtype':'classicframe', 'probelag': 3, 'pauseframes':4, 'probeduration':2/30},
+                         {'test':'lag', 'period':0.20, 'amplitude':4, 'stimtype':'classicframe', 'probelag': 4, 'pauseframes':4, 'probeduration':2/30},
+                         {'test':'lag', 'period':0.20, 'amplitude':4, 'stimtype':'classicframe', 'probelag': 5, 'pauseframes':4, 'probeduration':2/30},
+                         
+                        #  # classic frame leads
+                         {'test':'lead', 'period':0.20, 'amplitude':4, 'stimtype':'classicframe', 'probelag': -0, 'pauseframes':4, 'probeduration':2/30}, # 
+                         {'test':'lead', 'period':0.20, 'amplitude':4, 'stimtype':'classicframe', 'probelag': -3, 'pauseframes':4, 'probeduration':2/30},
+                         {'test':'lead', 'period':0.20, 'amplitude':4, 'stimtype':'classicframe', 'probelag': -4, 'pauseframes':4, 'probeduration':2/30},
+                         {'test':'lead', 'period':0.20, 'amplitude':4, 'stimtype':'classicframe', 'probelag': -5, 'pauseframes':4, 'probeduration':2/30},
+
+                        # PROBE 1/30
+                        #  # classic frame lags
+                         {'test':'lag', 'period':0.20, 'amplitude':4, 'stimtype':'classicframe', 'probelag': 0, 'pauseframes':4, 'probeduration':1/30}, # 
+                         {'test':'lag', 'period':0.20, 'amplitude':4, 'stimtype':'classicframe', 'probelag': 3, 'pauseframes':4, 'probeduration':1/30},
+                         {'test':'lag', 'period':0.20, 'amplitude':4, 'stimtype':'classicframe', 'probelag': 4, 'pauseframes':4, 'probeduration':1/30},
+                         {'test':'lag', 'period':0.20, 'amplitude':4, 'stimtype':'classicframe', 'probelag': 5, 'pauseframes':4, 'probeduration':1/30},
+                         
+                        #  # classic frame leads
+                         {'test':'lead', 'period':0.20, 'amplitude':4, 'stimtype':'classicframe', 'probelag': -0, 'pauseframes':4, 'probeduration':1/30}, # 
+                         {'test':'lead', 'period':0.20, 'amplitude':4, 'stimtype':'classicframe', 'probelag': -3, 'pauseframes':4, 'probeduration':1/30},
+                         {'test':'lead', 'period':0.20, 'amplitude':4, 'stimtype':'classicframe', 'probelag': -4, 'pauseframes':4, 'probeduration':1/30},
+                         {'test':'lead', 'period':0.20, 'amplitude':4, 'stimtype':'classicframe', 'probelag': -5, 'pauseframes':4, 'probeduration':1/30},
+
+                        # PROBE 4/30
+                        #  # classic frame lags
+                         {'test':'lag', 'period':0.20, 'amplitude':4, 'stimtype':'classicframe', 'probelag': 0, 'pauseframes':4, 'probeduration':4/30}, # 
+                         {'test':'lag', 'period':0.20, 'amplitude':4, 'stimtype':'classicframe', 'probelag': 3, 'pauseframes':4, 'probeduration':4/30},
+                         {'test':'lag', 'period':0.20, 'amplitude':4, 'stimtype':'classicframe', 'probelag': 4, 'pauseframes':4, 'probeduration':4/30},
+                         {'test':'lag', 'period':0.20, 'amplitude':4, 'stimtype':'classicframe', 'probelag': 5, 'pauseframes':4, 'probeduration':4/30},
+                         
+                        #  # classic frame leads
+                         {'test':'lead', 'period':0.20, 'amplitude':4, 'stimtype':'classicframe', 'probelag': -0, 'pauseframes':4, 'probeduration':4/30}, # 
+                         {'test':'lead', 'period':0.20, 'amplitude':4, 'stimtype':'classicframe', 'probelag': -3, 'pauseframes':4, 'probeduration':4/30},
+                         {'test':'lead', 'period':0.20, 'amplitude':4, 'stimtype':'classicframe', 'probelag': -4, 'pauseframes':4, 'probeduration':4/30},
+                         {'test':'lead', 'period':0.20, 'amplitude':4, 'stimtype':'classicframe', 'probelag': -5, 'pauseframes':4, 'probeduration':4/30},
+
+                         ]
+                         
+
+        return( dictToBlockTrials(cfg=cfg, condictionary=condictionary, nblocks=3, nrepetitions=1, shuffle=True) )
 
 
 def run_exp(expno=1, setup='tablet', ID=np.nan, eyetracking=False):
