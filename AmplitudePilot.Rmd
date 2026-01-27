@@ -326,7 +326,7 @@ APPARENT MOTION STUFF
 
 ```{r apparent, fig.width=8, fig.height=4}
 df3 <- read.csv("data/apparent/exp_1/marius/responses.csv", stringsAsFactors = FALSE)
-df3$percept <- df3$percept_abs * 2 * df$xfactor
+df3$percept <- df3$percept_abs * 2 * df3$xfactor
 
 df2 <- read.csv("data/apparent/exp_5/test/responses.csv", stringsAsFactors = FALSE)
 df2$percept <- df2$percept_abs * 2 * df2$xfactor
@@ -376,7 +376,7 @@ FRAME LAG STUFF
 
 ```{r make_probe_lag_look_up}
 
-probeLagLookUp <- function(framelags, FMD, FMA, pause_duration=NULL) {
+probeLagLookUp <- function(framelags, FMD, FMA, pause_duration=NULL, probe_duration=NULL) {
   
   # framelags <- c(0,2,3,4,5,6,7,8,9,10,11)
   # 
@@ -385,24 +385,30 @@ probeLagLookUp <- function(framelags, FMD, FMA, pause_duration=NULL) {
   
   lagdurations <- abs(framelags/30) # framelags are at 30 Hz indeed
   
-  probe_duration <- (2/30)/2 # check this!
+  if (is.null(probe_duration)) {
+      probe_duration <- (2/30)/2 # check this!
+  } else {
+    probe_duration <- probe_duration / 2
+  }
   if (is.null(pause_duration)) {
     pause_duration <- (4/30)/2 # errrr?
   }
+  
+  HPD <- pause_duration/2
   
   probe_spacing <- c()
   
   for (lagdur in lagdurations) {
     probe_onset <- lagdur - probe_duration
     
-    if (probe_onset < pause_duration) {
+    if (probe_onset < HPD) {
       probe_offset <- lagdur + probe_duration
-      if (probe_offset <= pause_duration) {
+      if (probe_offset <= HPD) {
         probe_spacing <- c(probe_spacing, FMA)
       } else {
-        static_part <- (pause_duration - probe_onset) / (2*probe_duration)
+        static_part <- (HPD - probe_onset) / (2*probe_duration)
         
-        dynamic_duration <- probe_offset - pause_duration
+        dynamic_duration <- probe_offset - HPD
         dynamic_part <- dynamic_duration / (2*probe_duration)
         frame_pos <- FMA / (FMD) * (dynamic_duration/2)
         
@@ -410,7 +416,7 @@ probeLagLookUp <- function(framelags, FMD, FMA, pause_duration=NULL) {
         probe_spacing <- c(probe_spacing, probe_space)
       }
     } else {
-      frame_pos <- FMA / (FMD) * (lagdur - pause_duration)
+      frame_pos <- FMA / (FMD) * (lagdur - HPD)
       probe_spacing <- c(probe_spacing, diff(c(frame_pos, 4-frame_pos)))
     }
   }
@@ -484,3 +490,290 @@ for (df_no in c(1,2)) {
 }
 ```
 
+
+# Probe leads & lags
+
+first fix the lead/lag test tags
+
+```{r}
+cfg <- RJSONIO::fromJSON("data/apparent/exp_5/mariusB/cfg.json")
+
+conditions <- cfg$conditions
+
+blocks <- cfg$blocks
+
+test_column <- c()
+
+for (blockno in c(1:length(blocks))) {
+  
+  trialtypes <- blocks[[blockno]]$trialtypes
+  
+  for (trialno in c(1:length(trialtypes))) {
+    trialtype <- trialtypes[[trialno]]
+    condition <- conditions[[trialtype+1]]
+    
+    test_column <- c(test_column, condition$test)
+  }
+  
+  
+}
+write.csv(data.frame(test=test_column),
+          file="data/apparent/exp_5/mariusB_org/test_column.csv",
+          row.names=FALSE)
+
+```
+
+
+
+
+```{r probe-lead-lag, fig.width=8, fig.height=8}
+dfB <- read.csv("data/apparent/exp_5/mariusB_org/responses.csv", stringsAsFactors = FALSE)
+dfB$percept <- dfB$percept_abs * 2 * dfB$xfactor
+layout(mat=matrix(c(1,2), nrow=2, ncol=1), heights=c(1,1))
+
+for (movdur in c(0.2, 0.3)) {
+  
+  # dfD <- dfB[which(dfB$period == movdur), ]
+  # print(dim(dfD))
+  
+  plot(NULL,NULL,
+       xlim=c(-9,9), ylim=c(-4,4),
+       xlab="probe offset in frame [dva]",ylab="percept [dva]",
+       ax=F,bty='n')
+  
+
+  for (rel in c('lead','lag')) {
+    idx <- which(dfB$period == movdur & dfB$test == rel)
+    # print(idx)
+    dfP <- dfB[idx, ]
+    
+    # print(dim(dfP))
+    x_offset <- list('lead' = -4.5,
+                     'lag'  =  4.5)[[rel]]
+    
+    lines(x=c(x_offset, x_offset), y=c(-4,4), lty=2, col='gray')
+    lines(x=-sign(x_offset)*c(-4,4)+x_offset, y=c(-4,4), lty=2, col='gray')
+    lines(x=c(-4,4)+x_offset, y=c(0,0), lty=2, col='gray')
+    
+
+    framelags <- sort(unique(dfP$probelag))
+  
+    look.up <- probeLagLookUp(framelags = framelags,
+                              FMD = movdur,
+                              FMA = 4,
+                              pause_duration = 4/30)
+    
+    dfP$relprobedist <- NA
+    for (pl in framelags) {
+      dfP$relprobedist[which(dfP$probelag == pl)] <- look.up$probespacing[which(look.up$framelag == pl)]
+    }
+    
+    for (stimtype in c('classicframe', 'apparentframe')) {
+      
+      ltdf <- dfP[which(dfP$stimtype == stimtype), ]
+      
+      avg <- aggregate(percept ~ relprobedist, data = ltdf, FUN = mean)
+      CI  <- aggregate(percept ~ relprobedist, data = ltdf, FUN = Reach::getConfidenceInterval, method='b')
+      # print(avg)
+      # print(CI$percept)
+      color = list('classicframe'='orange', 'apparentframe'='purple')[[stimtype]]
+      polygon(x_offset + (-1*sign(x_offset)*c(avg$relprobedist, rev(avg$relprobedist))),
+              c(CI$percept[,1], rev(CI$percept[,2])),
+              col=adjustcolor(color, alpha.f=0.2), border=NA)
+      lines((-1*sign(x_offset)*avg$relprobedist)+x_offset, avg$percept, type='b', lwd=2, col=color)
+      
+    }
+    
+    if (rel=='lag') {
+      axis(side=1, at=c(-4,-2,0,2,4)+x_offset, labels=c(4,2,0,-2,-4))
+    } else {
+      axis(side=1, at=c(-4,-2,0,2,4)+x_offset, labels=c(-4,-2,0,2,4))
+    }
+    
+    text(x=x_offset, y=5, labels=sprintf('%ss - %d ms frame movement', rel, round(movdur*1000)), xpd=TRUE)
+    
+    if (movdur == 0.2 && rel == 'lead') {
+      legend( x=-9.5, y=4,
+              legend=c("continuous motion", "apparent motion"),
+              col=c('orange', 'purple'),
+              lwd=2, bty='n' )
+    }
+  
+  }
+  
+  axis(side=2, at=c(-4, -2, 0, 2, 4))
+
+}
+
+```
+
+
+
+```{r probe-lead-lag, fig.width=5, fig.height=10}
+dfB <- read.csv("data/apparent/exp_6/mariusB/responses.csv", stringsAsFactors = FALSE)
+# dfB$percept <- dfB$percept_abs * 2 * dfB$xfactor
+layout(mat=matrix(c(1,2,3,4), nrow=4, ncol=1), heights=c(1,1))
+
+for (movdur in c(0.1, 0.2, 0.4, 0.6)) {
+  
+  # dfD <- dfB[which(dfB$period == movdur), ]
+  # print(dim(dfD))
+  
+  plot(NULL,NULL,
+       xlim=c(-7,7), ylim=c(-2,4),
+       xlab="probe offset in frame [dva]",ylab="percept [dva]",
+       ax=F,bty='n')
+  
+
+  for (rel in c('lead','lag')) {
+    idx <- which(dfB$period == movdur & dfB$test == rel)
+    # print(idx)
+    dfP <- dfB[idx, ]
+    
+    # print(dim(dfP))
+    x_offset <- list('lead' = -4.5,
+                     'lag'  =  4.5)[[rel]]
+    
+    lines(x=c(x_offset, x_offset), y=c(-4,4), lty=2, col='gray')
+    lines(x=-sign(x_offset)*c(-4,4)+x_offset, y=c(-4,4), lty=2, col='gray')
+    lines(x=c(-4,4)+x_offset, y=c(0,0), lty=2, col='gray')
+    
+
+    framelags <- sort(unique(dfP$probelag))
+  
+    look.up <- probeLagLookUp(framelags = framelags,
+                              FMD = movdur,
+                              FMA = 4,
+                              pause_duration = 4/30)
+    # print(look.up)
+    dfP$relprobedist <- NA
+    for (pl in framelags) {
+      dfP$relprobedist[which(dfP$probelag == pl)] <- look.up$probespacing[which(look.up$framelag == pl)]
+    }
+    
+    for (stimtype in c('classicframe', 'apparentframe')) {
+      
+      ltdf <- dfP[which(dfP$stimtype == stimtype), ]
+      
+      avg <- aggregate(percept ~ relprobedist, data = ltdf, FUN = mean)
+      CI  <- aggregate(percept ~ relprobedist, data = ltdf, FUN = Reach::getConfidenceInterval, method='b')
+      # print(avg)
+      # print(CI$percept)
+      color = list('classicframe'='orange', 'apparentframe'='purple')[[stimtype]]
+      polygon(x_offset + (-1*sign(x_offset)*c(avg$relprobedist, rev(avg$relprobedist))),
+              c(CI$percept[,1], rev(CI$percept[,2])),
+              col=adjustcolor(color, alpha.f=0.2), border=NA)
+      lines((-1*sign(x_offset)*avg$relprobedist)+x_offset, avg$percept, type='b', lwd=2, col=color)
+      
+    }
+    
+    if (rel=='lag') {
+      axis(side=1, at=c(-4,-2,0,2)+x_offset, labels=c(4,2,0,-2))
+    } else {
+      axis(side=1, at=c(-2,0,2,4)+x_offset, labels=c(-2,0,2,4))
+    }
+    
+    text(x=x_offset, y=5, labels=sprintf('%ss - %d ms frame movement', rel, round(movdur*1000)), xpd=TRUE)
+    
+    if (movdur == 0.2 && rel == 'lead') {
+      legend( x=-7.5, y=4,
+              legend=c("continuous motion", "apparent motion"),
+              col=c('orange', 'purple'),
+              lwd=2, bty='n' )
+    }
+  
+  }
+  
+  axis(side=2, at=c(-2, 0, 2, 4))
+
+}
+
+```
+
+
+
+
+```{r probe-duration, fig.width=5, fig.height=7.5}
+dfB <- read.csv("data/apparent/exp_7/probeDurs/responses.csv", stringsAsFactors = FALSE)
+
+dfB$probe_frames <- dfB$probeduration / (1/30)
+
+
+layout(mat=matrix(c(1,2,3), nrow=3, ncol=1), heights=c(1,1))
+
+for (probdur in c(sort(unique(dfB$probe_frames)))) {
+  
+  movdur <- 0.2
+  # dfD <- dfB[which(dfB$period == movdur), ]
+  # print(dim(dfD))
+  
+  plot(NULL,NULL,
+       xlim=c(-7,7), ylim=c(-2,4),
+       xlab="probe offset in frame [dva]",ylab="percept [dva]",
+       ax=F,bty='n')
+  
+
+  for (rel in c('lead','lag')) {
+    idx <- which(dfB$probe_frames == probdur & dfB$test == rel)
+    
+    dfP <- dfB[idx, ]
+    
+    # print(dim(dfP))
+    x_offset <- list('lead' = -4.5,
+                     'lag'  =  4.5)[[rel]]
+    
+    lines(x=c(x_offset, x_offset), y=c(-4,4), lty=2, col='gray')
+    lines(x=-sign(x_offset)*c(-4,4)+x_offset, y=c(-4,4), lty=2, col='gray')
+    lines(x=c(-4,4)+x_offset, y=c(0,0), lty=2, col='gray')
+    
+
+    framelags <- sort(unique(dfP$probelag))
+  
+    look.up <- probeLagLookUp(framelags = framelags,
+                              FMD = movdur,
+                              FMA = 4,
+                              pause_duration = 4/30)
+    # print(look.up)
+    dfP$relprobedist <- NA
+    for (pl in framelags) {
+      dfP$relprobedist[which(dfP$probelag == pl)] <- look.up$probespacing[which(look.up$framelag == pl)]
+    }
+    
+    for (stimtype in c('classicframe')) {
+      
+      ltdf <- dfP[which(dfP$stimtype == stimtype), ]
+      
+      avg <- aggregate(percept ~ relprobedist, data = ltdf, FUN = mean)
+      CI  <- aggregate(percept ~ relprobedist, data = ltdf, FUN = Reach::getConfidenceInterval, method='b')
+      # print(avg)
+      # print(CI$percept)
+      color = list('classicframe'='orange', 'apparentframe'='purple')[[stimtype]]
+      polygon(x_offset + (-1*sign(x_offset)*c(avg$relprobedist, rev(avg$relprobedist))),
+              c(CI$percept[,1], rev(CI$percept[,2])),
+              col=adjustcolor(color, alpha.f=0.2), border=NA)
+      lines((-1*sign(x_offset)*avg$relprobedist)+x_offset, avg$percept, type='b', lwd=2, col=color)
+      
+    }
+    
+    if (rel=='lag') {
+      axis(side=1, at=c(-4,-2,0,2)+x_offset, labels=c(4,2,0,-2))
+    } else {
+      axis(side=1, at=c(-2,0,2,4)+x_offset, labels=c(-2,0,2,4))
+    }
+    
+    text(x=x_offset, y=5, labels=sprintf('%ss - %d ms probes', rel, round((probdur/30)*1000)), xpd=TRUE)
+    
+    if (movdur == 0.2 && rel == 'lead') {
+      legend( x=-7.5, y=4,
+              legend=c("continuous motion", "apparent motion"),
+              col=c('orange', 'purple'),
+              lwd=2, bty='n' )
+    }
+  
+  }
+  
+  axis(side=2, at=c(-2, 0, 2, 4))
+
+}
+
+```
