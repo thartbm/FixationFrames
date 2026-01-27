@@ -1228,10 +1228,9 @@ class EyeTracker:
     def __LT_lastsample(self):
         # data = LiveTrack.GetBufferedEyePositions(0,fixDurSamples,0) # this would get the last x samples, given by the second argument
         data = self.LiveTrack.GetLastResult() # gets only the very last sample
-        
+
         # this needs to be formatted in some standard way that is the same for all eye-tracker devices
         sample = {}
-        
         if self.samplemode in ['both','left','average']:
             if self.trackEyes[0]:
                 if data.Tracked:
@@ -1257,8 +1256,6 @@ class EyeTracker:
                 Y.append(sample['right'][1])
             if (any([data.Tracked, data.TrackedRight])):
                 sample['average'] = np.array([np.mean(X), np.mean(Y)])
-        
-        sample = list(sample[self.samplemode])
 
         return(sample)
 
