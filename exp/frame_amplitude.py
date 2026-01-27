@@ -280,7 +280,9 @@ def doTrial(cfg):
                       'blue_flashed':blue_on,
                       'red_flashed':red_on}).to_csv('timing_data/%0.3fd_%0.3fs.csv'%(distance, period), index=False)
     else:
-        response                = trialdict
+        response                = copy.deepcopy(trialdict)
+        if 'label' in response:
+            del response['label']
         response['xfactor']     = xfactor
         response['RT']          = reaction_time
         response['percept_abs'] = percept
