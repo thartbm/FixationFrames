@@ -595,7 +595,7 @@ def setupEyetracking(cfg):
 
 def getTasks(cfg):
 
-    if cfg['expno']==1:l
+    if cfg['expno']==1:
 
         # period: 1.0, 1/2, 1/3, 1/4, 1/5
         # amplit: 2.4, 4.8, 7.2, 9.6, 12
