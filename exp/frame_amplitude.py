@@ -398,8 +398,8 @@ def getStimuli(cfg, setup='tablet'):
                                          units='deg',
                                          size=[.5,.5],
                                          edges=180,
-                                         fillColor=[-1,-1,-1],
-                                         lineWidth=5,
+                                         fillColor=[1,1,1],
+                                         lineWidth=6,
                                          lineColor=[-1,-1,1],
                                          pos=[0-cfg['stim_offsets'][0],-dot_offset-cfg['stim_offsets'][1]])
 
@@ -702,7 +702,7 @@ def getTasks(cfg):
 
                          ]
 
-        return( dictToBlockTrials(cfg=cfg, condictionary=condictionary, nblocks=4, nrepetitions=1, shuffle=False) )
+        return( dictToBlockTrials(cfg=cfg, condictionary=condictionary, nblocks=4, nrepetitions=1, shuffle=True) )
         # return( dictToBlockTrials(cfg=cfg, condictionary=condictionary, nblocks=1, nrepetitions=1, shuffle=False) )
 
 
