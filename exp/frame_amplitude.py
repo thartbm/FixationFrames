@@ -286,8 +286,9 @@ def doTrial(cfg):
         response['xfactor']     = xfactor
         response['RT']          = reaction_time
         response['percept_abs'] = percept
-        response['percept_rel'] = percept/3
-        response['percept_scl'] = (percept/3)*cfg['dot_offset']*2
+        response['percept']     = percept * 2 * xfactor
+        # response['percept_rel'] = percept/3
+        # response['percept_scl'] = (percept/3)*cfg['dot_offset']*2
         response['trial_start'] = trial_start_time
         response['blank']       = blank
 
