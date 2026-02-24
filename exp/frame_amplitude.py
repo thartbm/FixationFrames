@@ -408,12 +408,12 @@ def getStimuli(cfg, setup='tablet'):
     cfg['hw']['plus'] = visual.ShapeStim(cfg['hw']['win'], 
                                 pos = [0,0],
                                 vertices = ((.1,.1),(.5,.1),(.5,-.1), (.1,-.1), (.1,-.5),(-.1,-.5),(-.1,-.1),(-.5,-.1),(-.5,.1),(-.1,.1),(-.1,.5),(.1,.5),(.1,.1)), 
-                                lineWidth = 0, 
+                                lineWidth = 1, 
                                 units = 'deg', 
                                 size = (1.5, 1.5), # might be too small?
                                 closeShape = True, 
-                                lineColor = None,
-                                fillColor=[-1,-1,-1]) # close to col_both?
+                                lineColor = [-1,-1,-1],
+                                fillColor = [-1,-1,-1]) # close to col_both?
 
     cfg['hw']['frame'] = visual.Rect(win=cfg['hw']['win'],
                                            width=7,
