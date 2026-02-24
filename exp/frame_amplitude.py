@@ -614,13 +614,6 @@ def getTasks(cfg):
                          {'period':1/3, 'amplitude':16, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':0.5, 'reference':0, 'label':'w 0.5, a 16'},
                          {'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':0.5, 'reference':0, 'label':'w 0.5, a 20'},
 
-                        #  {'period':1/3, 'amplitude':1, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':0.5, 'reference':0, 'label':'w 0.5, a 1'},
-                        #  {'period':1/3, 'amplitude':2, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':0.5, 'reference':0, 'label':'w 0.5, a 2'},
-                         {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':0.5, 'reference':0, 'label':'w 0.5, a 4'},
-                         {'period':1/3, 'amplitude':8, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':0.5, 'reference':0, 'label':'w 0.5, a 8'},
-                         {'period':1/3, 'amplitude':12, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':0.5, 'reference':0, 'label':'w 0.5, a 12'},
-                         {'period':1/3, 'amplitude':16, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':0.5, 'reference':0, 'label':'w 0.5, a 16'},
-                         {'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':0.5, 'reference':0, 'label':'w 0.5, a 20'},
 
                         #  {'period':1/3, 'amplitude':1, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':7, 'reference':0, 'label':'w 7, a 1'},
                         #  {'period':1/3, 'amplitude':2, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':7, 'reference':0, 'label':'w 7, a 2'},
@@ -629,14 +622,6 @@ def getTasks(cfg):
                          {'period':1/3, 'amplitude':12, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':7, 'reference':0, 'label':'w 7, a 12'},
                          {'period':1/3, 'amplitude':16, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':7, 'reference':0, 'label':'w 7, a 16'},
                          {'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':7, 'reference':0, 'label':'w 7, a 20'},
-
-                        #  {'period':1/3, 'amplitude':1, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':7, 'reference':1, 'label':'w 7, a 1'},
-                        #  {'period':1/3, 'amplitude':2, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':7, 'reference':1, 'label':'w 7, a 2'},
-                         {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':7, 'reference':1, 'label':'w 7, a 4'},
-                         {'period':1/3, 'amplitude':8, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':7, 'reference':1, 'label':'w 7, a 8'},
-                         {'period':1/3, 'amplitude':12, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':7, 'reference':1, 'label':'w 7, a 12'},
-                         {'period':1/3, 'amplitude':16, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':7, 'reference':1, 'label':'w 7, a 16'},
-                         {'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':7, 'reference':1, 'label':'w 7, a 20'},
 
 
                         #  {'period':1/3, 'amplitude':1, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':14, 'reference':0, 'label':'w 14, a 1'},
@@ -647,13 +632,6 @@ def getTasks(cfg):
                          {'period':1/3, 'amplitude':16, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':14, 'reference':0, 'label':'w 14, a 16'},
                          {'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':14, 'reference':0, 'label':'w 14, a 20'},
 
-                        #  {'period':1/3, 'amplitude':1, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':14, 'reference':1, 'label':'w 14, a 1'},
-                        #  {'period':1/3, 'amplitude':2, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':14, 'label':'w 14, a 2'},
-                         {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':14, 'reference':1, 'label':'w 14, a 4'},
-                         {'period':1/3, 'amplitude':8, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':14, 'reference':1, 'label':'w 14, a 8'},
-                         {'period':1/3, 'amplitude':12, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':14, 'reference':1, 'label':'w 14, a 12'},
-                         {'period':1/3, 'amplitude':16, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':14, 'reference':1, 'label':'w 14, a 16'},
-                         {'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':14, 'reference':1, 'label':'w 14, a 20'},
 
                         # offsets added
 
@@ -702,7 +680,7 @@ def getTasks(cfg):
 
                          ]
 
-        return( dictToBlockTrials(cfg=cfg, condictionary=condictionary, nblocks=4, nrepetitions=1, shuffle=True) )
+        return( dictToBlockTrials(cfg=cfg, condictionary=condictionary, nblocks=3, nrepetitions=1, shuffle=True) )
         # return( dictToBlockTrials(cfg=cfg, condictionary=condictionary, nblocks=1, nrepetitions=1, shuffle=False) )
 
 
