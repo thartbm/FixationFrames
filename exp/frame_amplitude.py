@@ -95,10 +95,12 @@ def doTrial(cfg):
     showreference = False
     if reference > 0:
         showreference = True
-        cfg['hw']['plus'].ori = 45 # random.uniform(40,50)
+        cfg['hw']['plus'].ori = 0
+        
+        # random.uniform(40,50)
         # ori is in degrees, 0 is the original orientation
         # it's a plus, so an orientation of 45 turns it into a cross (x)
-        # the vertical lines of the plus no longer points directly at anything anymore
+        # the vertical line of the plus would not point directly at anything anymore
 
         # not adding wobble to it just now, but some range of orientations
         # also makes the x less informative about the position of the probes / frame
@@ -398,9 +400,9 @@ def getStimuli(cfg, setup='tablet'):
                                          units='deg',
                                          size=[.5,.5],
                                          edges=180,
-                                         fillColor=[1,1,1],
+                                         fillColor=[0,0,0],
                                          lineWidth=6,
-                                         lineColor=[-1,-1,1],
+                                         lineColor=[-1,-1,-1],
                                          pos=[0-cfg['stim_offsets'][0],-dot_offset-cfg['stim_offsets'][1]])
 
     cfg['hw']['plus'] = visual.ShapeStim(cfg['hw']['win'], 
@@ -408,10 +410,10 @@ def getStimuli(cfg, setup='tablet'):
                                 vertices = ((.1,.1),(.5,.1),(.5,-.1), (.1,-.1), (.1,-.5),(-.1,-.5),(-.1,-.1),(-.5,-.1),(-.5,.1),(-.1,.1),(-.1,.5),(.1,.5),(.1,.1)), 
                                 lineWidth = 0, 
                                 units = 'deg', 
-                                size = (1, 1), # might be too small?
+                                size = (1.5, 1.5), # might be too small?
                                 closeShape = True, 
                                 lineColor = None,
-                                fillColor=[0,-1,-1]) # close to col_both?
+                                fillColor=[-1,-1,-1]) # close to col_both?
 
     cfg['hw']['frame'] = visual.Rect(win=cfg['hw']['win'],
                                            width=7,
