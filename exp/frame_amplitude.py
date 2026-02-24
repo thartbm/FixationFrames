@@ -408,7 +408,7 @@ def getStimuli(cfg, setup='tablet'):
     cfg['hw']['plus'] = visual.ShapeStim(cfg['hw']['win'], 
                                 pos = [0,0],
                                 vertices = ((.1,.1),(.5,.1),(.5,-.1), (.1,-.1), (.1,-.5),(-.1,-.5),(-.1,-.1),(-.5,-.1),(-.5,.1),(-.1,.1),(-.1,.5),(.1,.5),(.1,.1)), 
-                                lineWidth = 1, 
+                                lineWidth = 0, 
                                 units = 'deg', 
                                 size = (1.5, 1.5), # might be too small?
                                 closeShape = True, 
@@ -485,10 +485,10 @@ def getStimuli(cfg, setup='tablet'):
     cfg['hw']['text'] = visual.TextStim(win=cfg['hw']['win'],
                                         text='Hello!'
                                         )
-    cfg['hw']['plus'] = visual.TextStim(win=cfg['hw']['win'],
-                                        text='+',
-                                        units='deg'
-                                        )
+    # cfg['hw']['plus'] = visual.TextStim(win=cfg['hw']['win'],
+    #                                     text='+',
+    #                                     units='deg'
+    #                                     )
 
 
 
