@@ -95,7 +95,8 @@ def doTrial(cfg):
     showreference = False
     if reference > 0:
         showreference = True
-        cfg['hw']['plus'].ori = 0
+        cfg['hw']['plus1'].ori = 0
+        cfg['hw']['plus2'].ori = 0
         
         # random.uniform(40,50)
         # ori is in degrees, 0 is the original orientation
