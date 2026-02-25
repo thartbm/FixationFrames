@@ -172,7 +172,8 @@ def doTrial(cfg):
     flashdot_centre = [8,8]
 
     cfg['hw']['fixdot'].pos = [frameoffset, -2]
-    cfg['hw']['plus'].pos = [-frameoffset, -2]
+    cfg['hw']['plus1'].pos = [-frameoffset, -2]
+    cfg['hw']['plus2'].pos = [-frameoffset, -14]
 
     if cfg['expno'] == 2:
         cfg['hw']['text'].text = label
@@ -230,7 +231,8 @@ def doTrial(cfg):
             cfg['hw']['text'].draw()
 
         if showreference:
-            cfg['hw']['plus'].draw()
+            cfg['hw']['plus1'].draw()
+            cfg['hw']['plus2'].draw()
         if showFixation:
             cfg['hw']['fixdot'].draw()
 
@@ -405,7 +407,17 @@ def getStimuli(cfg, setup='tablet'):
                                          lineColor=[-1,-1,-1],
                                          pos=[0-cfg['stim_offsets'][0],-dot_offset-cfg['stim_offsets'][1]])
 
-    cfg['hw']['plus'] = visual.ShapeStim(cfg['hw']['win'], 
+    cfg['hw']['plus1'] = visual.ShapeStim(cfg['hw']['win'], 
+                                pos = [0,0],
+                                vertices = ((.1,.1),(.5,.1),(.5,-.1), (.1,-.1), (.1,-.5),(-.1,-.5),(-.1,-.1),(-.5,-.1),(-.5,.1),(-.1,.1),(-.1,.5),(.1,.5),(.1,.1)), 
+                                lineWidth = 0, 
+                                units = 'deg', 
+                                size = (1, 1), # good size?
+                                closeShape = True, 
+                                lineColor = [-1,-1,-1],
+                                fillColor = [-1,-1,-1]) # close to col_both?
+
+    cfg['hw']['plus2'] = visual.ShapeStim(cfg['hw']['win'], 
                                 pos = [0,0],
                                 vertices = ((.1,.1),(.5,.1),(.5,-.1), (.1,-.1), (.1,-.5),(-.1,-.5),(-.1,-.1),(-.5,-.1),(-.5,.1),(-.1,.1),(-.1,.5),(.1,.5),(.1,.1)), 
                                 lineWidth = 0, 
