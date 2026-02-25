@@ -305,8 +305,8 @@ def doTrial(cfg):
                       'red_flashed':red_on}).to_csv('timing_data/%0.3fd_%0.3fs.csv'%(distance, period), index=False)
     else:
         response                = copy.deepcopy(trialdict)
-        if 'label' in response:
-            del response['label']
+        # if 'label' in response:
+        #     del response['label']
         response['xfactor']     = xfactor
         response['RT']          = reaction_time
         response['percept_abs'] = percept
@@ -610,69 +610,69 @@ def getTasks(cfg):
 
                         #  {'period':1/3, 'amplitude':1, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':0.5, 'reference':0, 'label':'w 0.5, a 1'},
                         #  {'period':1/3, 'amplitude':2, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':0.5, 'reference':0, 'label':'w 0.5, a 2'},
-                         {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':0.5, 'reference':0, 'label':'w 0.5, a 4'},
-                         {'period':1/3, 'amplitude':8, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':0.5, 'reference':0, 'label':'w 0.5, a 8'},
-                         {'period':1/3, 'amplitude':12, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':0.5, 'reference':0, 'label':'w 0.5, a 12'},
-                         {'period':1/3, 'amplitude':16, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':0.5, 'reference':0, 'label':'w 0.5, a 16'},
-                         {'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':0.5, 'reference':0, 'label':'w 0.5, a 20'},
+                         {'test':'amplitude', 'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':0.5, 'reference':0, 'label':'w 0.5, a 4'},
+                         {'test':'amplitude', 'period':1/3, 'amplitude':8, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':0.5, 'reference':0, 'label':'w 0.5, a 8'},
+                         {'test':'amplitude', 'period':1/3, 'amplitude':12, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':0.5, 'reference':0, 'label':'w 0.5, a 12'},
+                         {'test':'amplitude', 'period':1/3, 'amplitude':16, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':0.5, 'reference':0, 'label':'w 0.5, a 16'},
+                         {'test':'amplitude', 'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':0.5, 'reference':0, 'label':'w 0.5, a 20'},
 
 
                         #  {'period':1/3, 'amplitude':1, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':7, 'reference':0, 'label':'w 7, a 1'},
                         #  {'period':1/3, 'amplitude':2, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':7, 'reference':0, 'label':'w 7, a 2'},
-                         {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':7, 'reference':0, 'label':'w 7, a 4'},
-                         {'period':1/3, 'amplitude':8, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':7, 'reference':0, 'label':'w 7, a 8'},
-                         {'period':1/3, 'amplitude':12, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':7, 'reference':0, 'label':'w 7, a 12'},
-                         {'period':1/3, 'amplitude':16, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':7, 'reference':0, 'label':'w 7, a 16'},
-                         {'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':7, 'reference':0, 'label':'w 7, a 20'},
+                         {'test':'amplitude', 'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':7, 'reference':0, 'label':'w 7, a 4'},
+                         {'test':'amplitude', 'period':1/3, 'amplitude':8, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':7, 'reference':0, 'label':'w 7, a 8'},
+                         {'test':'amplitude', 'period':1/3, 'amplitude':12, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':7, 'reference':0, 'label':'w 7, a 12'},
+                         {'test':'amplitude', 'period':1/3, 'amplitude':16, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':7, 'reference':0, 'label':'w 7, a 16'},
+                         {'test':'amplitude', 'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':7, 'reference':0, 'label':'w 7, a 20'},
 
 
                         #  {'period':1/3, 'amplitude':1, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':14, 'reference':0, 'label':'w 14, a 1'},
                         #  {'period':1/3, 'amplitude':2, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':14, 'reference':0, 'label':'w 14, a 2'},
-                         {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':14, 'reference':0, 'label':'w 14, a 4'},
-                         {'period':1/3, 'amplitude':8, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':14, 'reference':0, 'label':'w 14, a 8'},
-                         {'period':1/3, 'amplitude':12, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':14, 'reference':0, 'label':'w 14, a 12'},
-                         {'period':1/3, 'amplitude':16, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':14, 'reference':0, 'label':'w 14, a 16'},
-                         {'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':14, 'reference':0, 'label':'w 14, a 20'},
+                         {'test':'amplitude', 'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':14, 'reference':0, 'label':'w 14, a 4'},
+                         {'test':'amplitude', 'period':1/3, 'amplitude':8, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':14, 'reference':0, 'label':'w 14, a 8'},
+                         {'test':'amplitude', 'period':1/3, 'amplitude':12, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':14, 'reference':0, 'label':'w 14, a 12'},
+                         {'test':'amplitude', 'period':1/3, 'amplitude':16, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':14, 'reference':0, 'label':'w 14, a 16'},
+                         {'test':'amplitude', 'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':14, 'reference':0, 'label':'w 14, a 20'},
 
 
                         # offsets added
 
-                         {'period':1/3, 'amplitude':16, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':.5, 'reference':0, 'label':'w .5, a 20\nfo 0'},
-                         {'period':1/3, 'amplitude':16, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':2, 'framewidth':.5, 'reference':0, 'label':'w .5, a 20\nfo 4'},
-                         {'period':1/3, 'amplitude':16, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':4, 'framewidth':.5, 'reference':0, 'label':'w .5, a 20\nfo 8'},
-                         {'period':1/3, 'amplitude':16, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':6, 'framewidth':.5, 'reference':0, 'label':'w .5, a 20\nfo 12'},
-                         {'period':1/3, 'amplitude':16, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':8, 'framewidth':.5, 'reference':0, 'label':'w .5, a 20\nfo 16'},
+                         {'test':'offset', 'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':.5, 'reference':0, 'label':'w .5, a 20\nfo 0'},
+                         {'test':'offset', 'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':2, 'framewidth':.5, 'reference':0, 'label':'w .5, a 20\nfo 4'},
+                         {'test':'offset', 'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':4, 'framewidth':.5, 'reference':0, 'label':'w .5, a 20\nfo 8'},
+                         {'test':'offset', 'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':6, 'framewidth':.5, 'reference':0, 'label':'w .5, a 20\nfo 12'},
+                         {'test':'offset', 'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':8, 'framewidth':.5, 'reference':0, 'label':'w .5, a 20\nfo 16'},
 
-                         {'period':1/3, 'amplitude':16, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':7, 'reference':0, 'label':'w 7, a 20\nfo 0'},
-                         {'period':1/3, 'amplitude':16, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':2, 'framewidth':7, 'reference':0, 'label':'w 7, a 20\nfo 4'},
-                         {'period':1/3, 'amplitude':16, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':4, 'framewidth':7, 'reference':0, 'label':'w 7, a 20\nfo 8'},
-                         {'period':1/3, 'amplitude':16, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':6, 'framewidth':7, 'reference':0, 'label':'w 7, a 20\nfo 12'},
-                         {'period':1/3, 'amplitude':16, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':8, 'framewidth':7, 'reference':0, 'label':'w 7, a 20\nfo 16'},
+                         {'test':'offset', 'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':7, 'reference':0, 'label':'w 7, a 20\nfo 0'},
+                         {'test':'offset', 'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':2, 'framewidth':7, 'reference':0, 'label':'w 7, a 20\nfo 4'},
+                         {'test':'offset', 'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':4, 'framewidth':7, 'reference':0, 'label':'w 7, a 20\nfo 8'},
+                         {'test':'offset', 'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':6, 'framewidth':7, 'reference':0, 'label':'w 7, a 20\nfo 12'},
+                         {'test':'offset', 'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':8, 'framewidth':7, 'reference':0, 'label':'w 7, a 20\nfo 16'},
 
-                         {'period':1/3, 'amplitude':16, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':14, 'reference':0, 'label':'w 14, a 20\nfo 0'},
-                         {'period':1/3, 'amplitude':16, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':2, 'framewidth':14, 'reference':0, 'label':'w 14, a 20\nfo 4'},
-                         {'period':1/3, 'amplitude':16, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':4, 'framewidth':14, 'reference':0, 'label':'w 14, a 20\nfo 8'},
-                         {'period':1/3, 'amplitude':16, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':6, 'framewidth':14, 'reference':0, 'label':'w 14, a 20\nfo 12'},
-                         {'period':1/3, 'amplitude':16, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':8, 'framewidth':14, 'reference':0, 'label':'w 14, a 20\nfo 16'},
+                         {'test':'offset', 'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':14, 'reference':0, 'label':'w 14, a 20\nfo 0'},
+                         {'test':'offset', 'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':2, 'framewidth':14, 'reference':0, 'label':'w 14, a 20\nfo 4'},
+                         {'test':'offset', 'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':4, 'framewidth':14, 'reference':0, 'label':'w 14, a 20\nfo 8'},
+                         {'test':'offset', 'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':6, 'framewidth':14, 'reference':0, 'label':'w 14, a 20\nfo 12'},
+                         {'test':'offset', 'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':8, 'framewidth':14, 'reference':0, 'label':'w 14, a 20\nfo 16'},
 
 
-                         {'period':1/3, 'amplitude':16, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':.5, 'reference':1, 'label':'w .5, a 20\nfo 0'},
-                         {'period':1/3, 'amplitude':16, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':2, 'framewidth':.5, 'reference':1, 'label':'w .5, a 20\nfo 4'},
-                         {'period':1/3, 'amplitude':16, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':4, 'framewidth':.5, 'reference':1, 'label':'w .5, a 20\nfo 8'},
-                         {'period':1/3, 'amplitude':16, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':6, 'framewidth':.5, 'reference':1, 'label':'w .5, a 20\nfo 12'},
-                         {'period':1/3, 'amplitude':16, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':8, 'framewidth':.5, 'reference':1, 'label':'w .5, a 20\nfo 16'},
+                         {'test':'reference', 'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':.5, 'reference':1, 'label':'w .5, a 20\nfo 0'},
+                         {'test':'reference', 'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':2, 'framewidth':.5, 'reference':1, 'label':'w .5, a 20\nfo 4'},
+                         {'test':'reference', 'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':4, 'framewidth':.5, 'reference':1, 'label':'w .5, a 20\nfo 8'},
+                         {'test':'reference', 'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':6, 'framewidth':.5, 'reference':1, 'label':'w .5, a 20\nfo 12'},
+                         {'test':'reference', 'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':8, 'framewidth':.5, 'reference':1, 'label':'w .5, a 20\nfo 16'},
 
-                         {'period':1/3, 'amplitude':16, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':7, 'reference':1, 'label':'w 7, a 20\nfo 0'},
-                         {'period':1/3, 'amplitude':16, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':2, 'framewidth':7, 'reference':1, 'label':'w 7, a 20\nfo 4'},
-                         {'period':1/3, 'amplitude':16, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':4, 'framewidth':7, 'reference':1, 'label':'w 7, a 20\nfo 8'},
-                         {'period':1/3, 'amplitude':16, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':6, 'framewidth':7, 'reference':1, 'label':'w 7, a 20\nfo 12'},
-                         {'period':1/3, 'amplitude':16, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':8, 'framewidth':7, 'reference':1, 'label':'w 7, a 20\nfo 16'},
+                         {'test':'reference', 'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':7, 'reference':1, 'label':'w 7, a 20\nfo 0'},
+                         {'test':'reference', 'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':2, 'framewidth':7, 'reference':1, 'label':'w 7, a 20\nfo 4'},
+                         {'test':'reference', 'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':4, 'framewidth':7, 'reference':1, 'label':'w 7, a 20\nfo 8'},
+                         {'test':'reference', 'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':6, 'framewidth':7, 'reference':1, 'label':'w 7, a 20\nfo 12'},
+                         {'test':'reference', 'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':8, 'framewidth':7, 'reference':1, 'label':'w 7, a 20\nfo 16'},
 
-                         {'period':1/3, 'amplitude':16, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':14, 'reference':1, 'label':'w 14, a 20\nfo 0'},
-                         {'period':1/3, 'amplitude':16, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':2, 'framewidth':14, 'reference':1, 'label':'w 14, a 20\nfo 4'},
-                         {'period':1/3, 'amplitude':16, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':4, 'framewidth':14, 'reference':1, 'label':'w 14, a 20\nfo 8'},
-                         {'period':1/3, 'amplitude':16, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':6, 'framewidth':14, 'reference':1, 'label':'w 14, a 20\nfo 12'},
-                         {'period':1/3, 'amplitude':16, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':8, 'framewidth':14, 'reference':1, 'label':'w 14, a 20\nfo 16'},
+                         {'test':'reference', 'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':14, 'reference':1, 'label':'w 14, a 20\nfo 0'},
+                         {'test':'reference', 'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':2, 'framewidth':14, 'reference':1, 'label':'w 14, a 20\nfo 4'},
+                         {'test':'reference', 'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':4, 'framewidth':14, 'reference':1, 'label':'w 14, a 20\nfo 8'},
+                         {'test':'reference', 'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':6, 'framewidth':14, 'reference':1, 'label':'w 14, a 20\nfo 12'},
+                         {'test':'reference', 'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':8, 'framewidth':14, 'reference':1, 'label':'w 14, a 20\nfo 16'},
 
                          # ALTERNATIVE AMPLITUDES:
                         #  {'period':1/3, 'amplitude':3.2, 'stimtype':'classicframe', 'frameoffset':0},
