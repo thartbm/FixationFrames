@@ -476,7 +476,8 @@ def getStimuli(cfg, setup='tablet'):
 
     # cfg['hw']['tactor'] = tactor(port = '/dev/ttyACM0', baudrate=115200)
 
-    cfg['hw']['lefttick'] = sound.
+    cfg['hw']['lefttick'] = sound.Sound('left_tick.wav', sampleRate=44100)
+    cfg['hw']['righttick'] = sound.Sound('right_tick.wav', sampleRate=44100)
 
 
     return(cfg)
