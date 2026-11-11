@@ -781,6 +781,7 @@ def getStimuli(cfg, setup='tablet'):
         resolution   = [1920, 1080]
         size = [34.5, 19.5]
         distance = 40
+        screen = 1
 
 
     mymonitor = monitors.Monitor(name='temp',
@@ -1082,12 +1083,60 @@ def getTasks(cfg):
                 #  {'test':'anglespread', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':30, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2},
                 #  {'test':'anglespread', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0, 'anglespread':40, 'amplitudespread':0, 'framesize':[7,7], 'maxdotlife':1/2},
 
-                 {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':10, 'amplitudespread':4.0, 'framesize':[7,7], 'maxdotlife':1/8},
-                 {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':10, 'amplitudespread':8.0, 'framesize':[7,7], 'maxdotlife':1/8},
-                 {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':10, 'amplitudespread':12.0, 'framesize':[7,7], 'maxdotlife':1/8},
-                 {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':10, 'amplitudespread':16.0, 'framesize':[7,7], 'maxdotlife':1/8},
-                 {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':10, 'amplitudespread':20.0, 'framesize':[7,7], 'maxdotlife':1/8},
+                #  {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':0, 'amplitudespread':4.0,    'framesize':[7,7], 'maxdotlife':1/8},
+                #  {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':0, 'amplitudespread':6.0,    'framesize':[7,7], 'maxdotlife':1/8},
+                #  {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':0, 'amplitudespread':8.0,    'framesize':[7,7], 'maxdotlife':1/8},
+                #  {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':0, 'amplitudespread':4/0.45, 'framesize':[7,7], 'maxdotlife':1/8},
+                #  {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':0, 'amplitudespread':4/0.40, 'framesize':[7,7], 'maxdotlife':1/8},
+                #  {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':0, 'amplitudespread':4/0.35, 'framesize':[7,7], 'maxdotlife':1/8},
+                #  {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':0, 'amplitudespread':4/0.30, 'framesize':[7,7], 'maxdotlife':1/8},
+                #  {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':0, 'amplitudespread':4/0.25, 'framesize':[7,7], 'maxdotlife':1/8},
+                #  {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':0, 'amplitudespread':4/0.20, 'framesize':[7,7], 'maxdotlife':1/8},
+                #  {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':0, 'amplitudespread':4/0.15, 'framesize':[7,7], 'maxdotlife':1/8},
 
+                #  {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':5, 'amplitudespread':4.0,    'framesize':[7,7], 'maxdotlife':1/8},
+                #  {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':5, 'amplitudespread':6.0,    'framesize':[7,7], 'maxdotlife':1/8},
+                #  {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':5, 'amplitudespread':8.0,    'framesize':[7,7], 'maxdotlife':1/8},
+                #  {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':5, 'amplitudespread':4/0.45, 'framesize':[7,7], 'maxdotlife':1/8},
+                #  {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':5, 'amplitudespread':4/0.40, 'framesize':[7,7], 'maxdotlife':1/8},
+                #  {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':5, 'amplitudespread':4/0.35, 'framesize':[7,7], 'maxdotlife':1/8},
+                #  {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':5, 'amplitudespread':4/0.30, 'framesize':[7,7], 'maxdotlife':1/8},
+                #  {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':5, 'amplitudespread':4/0.25, 'framesize':[7,7], 'maxdotlife':1/8},
+                #  {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':5, 'amplitudespread':4/0.20, 'framesize':[7,7], 'maxdotlife':1/8},
+                #  {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':5, 'amplitudespread':4/0.15, 'framesize':[7,7], 'maxdotlife':1/8},
+
+                #  {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':10, 'amplitudespread':4.0,    'framesize':[7,7], 'maxdotlife':1/8},
+                #  {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':10, 'amplitudespread':6.0,    'framesize':[7,7], 'maxdotlife':1/8},
+                #  {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':10, 'amplitudespread':8.0,    'framesize':[7,7], 'maxdotlife':1/8},
+                #  {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':10, 'amplitudespread':4/0.45, 'framesize':[7,7], 'maxdotlife':1/8},
+                #  {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':10, 'amplitudespread':4/0.40, 'framesize':[7,7], 'maxdotlife':1/8},
+                #  {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':10, 'amplitudespread':4/0.35, 'framesize':[7,7], 'maxdotlife':1/8},
+                #  {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':10, 'amplitudespread':4/0.30, 'framesize':[7,7], 'maxdotlife':1/8},
+                #  {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':10, 'amplitudespread':4/0.25, 'framesize':[7,7], 'maxdotlife':1/8},
+                #  {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':10, 'amplitudespread':4/0.20, 'framesize':[7,7], 'maxdotlife':1/8},
+                #  {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':10, 'amplitudespread':4/0.15, 'framesize':[7,7], 'maxdotlife':1/8},
+
+                #  {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':20, 'amplitudespread':4.0,    'framesize':[7,7], 'maxdotlife':1/8},
+                #  {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':20, 'amplitudespread':6.0,    'framesize':[7,7], 'maxdotlife':1/8},
+                #  {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':20, 'amplitudespread':8.0,    'framesize':[7,7], 'maxdotlife':1/8},
+                #  {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':20, 'amplitudespread':4/0.45, 'framesize':[7,7], 'maxdotlife':1/8},
+                #  {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':20, 'amplitudespread':4/0.40, 'framesize':[7,7], 'maxdotlife':1/8},
+                #  {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':20, 'amplitudespread':4/0.35, 'framesize':[7,7], 'maxdotlife':1/8},
+                #  {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':20, 'amplitudespread':4/0.30, 'framesize':[7,7], 'maxdotlife':1/8},
+                #  {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':20, 'amplitudespread':4/0.25, 'framesize':[7,7], 'maxdotlife':1/8},
+                #  {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':20, 'amplitudespread':4/0.20, 'framesize':[7,7], 'maxdotlife':1/8},
+                #  {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':20, 'amplitudespread':4/0.15, 'framesize':[7,7], 'maxdotlife':1/8},
+
+                 {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':40, 'amplitudespread':4.0,    'framesize':[7,7], 'maxdotlife':1/8},
+                 {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':40, 'amplitudespread':6.0,    'framesize':[7,7], 'maxdotlife':1/8},
+                 {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':40, 'amplitudespread':8.0,    'framesize':[7,7], 'maxdotlife':1/8},
+                 {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':40, 'amplitudespread':4/0.45, 'framesize':[7,7], 'maxdotlife':1/8},
+                 {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':40, 'amplitudespread':4/0.40, 'framesize':[7,7], 'maxdotlife':1/8},
+                 {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':40, 'amplitudespread':4/0.35, 'framesize':[7,7], 'maxdotlife':1/8},
+                 {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':40, 'amplitudespread':4/0.30, 'framesize':[7,7], 'maxdotlife':1/8},
+                 {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':40, 'amplitudespread':4/0.25, 'framesize':[7,7], 'maxdotlife':1/8},
+                 {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':40, 'amplitudespread':4/0.20, 'framesize':[7,7], 'maxdotlife':1/8},
+                 {'test':'combined', 'period':1/4, 'amplitude':4, 'stimtype':'compoundframe', 'timespread':0.200, 'anglespread':40, 'amplitudespread':4/0.15, 'framesize':[7,7], 'maxdotlife':1/8},
 
                 #  {'test':'classic', 'period':1/4, 'amplitude':4.0, 'stimtype':'classicframe'},
                 #  {'test':'classic', 'period':1/4, 'amplitude':3.2, 'stimtype':'classicframe'},
@@ -1097,7 +1146,7 @@ def getTasks(cfg):
                  ]
 
 
-        return( dictToBlockTrials(cfg=cfg, condictionary=condictionary, nblocks=1, nrepetitions=5, shuffle=True) )
+        return( dictToBlockTrials(cfg=cfg, condictionary=condictionary, nblocks=1, nrepetitions=1, shuffle=False) )
 
 
 def dictToBlockTrials(cfg, condictionary, nblocks, nrepetitions, shuffle=True):

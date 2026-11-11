@@ -839,7 +839,7 @@ def getStimuli(cfg, setup='tablet'):
                                         #  lineColor=[-.5,-.5,-.5],
                                          lineColor=None,
                                         #  fillColor=[-.15,-.15,-.15],
-                                         fillColor=[.2,.2,.2],
+                                         fillColor=[0,-1,0],
                                          pos=[0,0])
     #np.tan(np.pi/6)*6
 
@@ -967,21 +967,23 @@ def getTasks(cfg):
 
         condictionary = [
 
+                 {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'dotoffset':0.0, 'probetype':'flashed'},
+                 {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'dotoffset':0.0, 'probetype':'continuous'},
 
-                 {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'dotoffset':.25, 'probetype':'flashed'},
-                 {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'dotoffset':.25, 'probetype':'continuous'},
+                 {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'dotoffset':0.2, 'probetype':'flashed'},
+                 {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'dotoffset':0.2, 'probetype':'continuous'},
 
-                 {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'dotoffset':.5, 'probetype':'flashed'},
-                 {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'dotoffset':.5, 'probetype':'continuous'},
+                 {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'dotoffset':0.4, 'probetype':'flashed'},
+                 {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'dotoffset':0.4, 'probetype':'continuous'},
 
-                 {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'dotoffset':1, 'probetype':'flashed'},
-                 {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'dotoffset':1, 'probetype':'continuous'},
+                 {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'dotoffset':0.8, 'probetype':'flashed'},
+                 {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'dotoffset':0.8, 'probetype':'continuous'},
 
-                 {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'dotoffset':2, 'probetype':'flashed'},
-                 {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'dotoffset':2, 'probetype':'continuous'},
+                 {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'dotoffset':1.6, 'probetype':'flashed'},
+                 {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'dotoffset':1.6, 'probetype':'continuous'},
 
-                 {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'dotoffset':4, 'probetype':'flashed'},
-                 {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'dotoffset':4, 'probetype':'continuous'},
+                 {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'dotoffset':3.2, 'probetype':'flashed'},
+                 {'period':1/3, 'amplitude':4, 'stimtype':'classicframe', 'dotoffset':3.2, 'probetype':'continuous'},
 
 
                  # some sanity frames:
@@ -992,7 +994,7 @@ def getTasks(cfg):
 
                  ]
 
-        return( dictToBlockTrials(cfg=cfg, condictionary=condictionary, nblocks=2, nrepetitions=2, shuffle=True) )
+        return( dictToBlockTrials(cfg=cfg, condictionary=condictionary, nblocks=1, nrepetitions=3, shuffle=True) )
         #return( dictToBlockTrials(cfg=cfg, condictionary=condictionary, nblocks=3, nrepetitions=5, shuffle=True) )
 
     if cfg['expno']==2:

@@ -648,7 +648,7 @@ def getTasks(cfg):
                          {'test':'amplitude', 'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':14, 'reference':0, 'label':'w 14, a 20'},
 
 
-                        # offsets added
+                        # offsets added --- the frameoffset variable is used as a fixation point offsets
 
                          {'test':'offset', 'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':0, 'framewidth':.5, 'reference':0, 'label':'w .5, a 20\nfo 0'},
                          {'test':'offset', 'period':1/3, 'amplitude':20, 'stimtype':'classicframe', 'frameparts':1, 'frameoffset':2, 'framewidth':.5, 'reference':0, 'label':'w .5, a 20\nfo 4'},

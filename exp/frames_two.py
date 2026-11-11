@@ -567,23 +567,38 @@ def getTasks(cfg):
 
                          {'period':1/3, 'amplitude':1, 'stimtype':'wireframes', 'innersize':4, 'inneramplitude':4, 'outersize':13, 'outeramplitude':4, 'label':''},
 
-                         {'period':1/3, 'amplitude':1, 'stimtype':'wireframes', 'innersize':4, 'inneramplitude':4, 'outersize':13, 'outeramplitude':3, 'label':''},
-                         {'period':1/3, 'amplitude':1, 'stimtype':'wireframes', 'innersize':4, 'inneramplitude':4, 'outersize':13, 'outeramplitude':2, 'label':''},
-                         {'period':1/3, 'amplitude':1, 'stimtype':'wireframes', 'innersize':4, 'inneramplitude':4, 'outersize':13, 'outeramplitude':1, 'label':''},
-                         {'period':1/3, 'amplitude':1, 'stimtype':'wireframes', 'innersize':4, 'inneramplitude':4, 'outersize':13, 'outeramplitude':0, 'label':''},
-                         {'period':1/3, 'amplitude':1, 'stimtype':'wireframes', 'innersize':4, 'inneramplitude':4, 'outersize':13, 'outeramplitude':-1, 'label':''},
-                         {'period':1/3, 'amplitude':1, 'stimtype':'wireframes', 'innersize':4, 'inneramplitude':4, 'outersize':13, 'outeramplitude':-2, 'label':''},
-                         {'period':1/3, 'amplitude':1, 'stimtype':'wireframes', 'innersize':4, 'inneramplitude':4, 'outersize':13, 'outeramplitude':-3, 'label':''},
-                         {'period':1/3, 'amplitude':1, 'stimtype':'wireframes', 'innersize':4, 'inneramplitude':4, 'outersize':13, 'outeramplitude':-4, 'label':''},
+                        #  {'period':1/3, 'amplitude':1, 'stimtype':'wireframes', 'innersize':4, 'inneramplitude':4, 'outersize':13, 'outeramplitude':3, 'label':''},
+                        #  {'period':1/3, 'amplitude':1, 'stimtype':'wireframes', 'innersize':4, 'inneramplitude':4, 'outersize':13, 'outeramplitude':2, 'label':''},
+                        #  {'period':1/3, 'amplitude':1, 'stimtype':'wireframes', 'innersize':4, 'inneramplitude':4, 'outersize':13, 'outeramplitude':1, 'label':''},
+                        #  {'period':1/3, 'amplitude':1, 'stimtype':'wireframes', 'innersize':4, 'inneramplitude':4, 'outersize':13, 'outeramplitude':0, 'label':''},
+                        #  {'period':1/3, 'amplitude':1, 'stimtype':'wireframes', 'innersize':4, 'inneramplitude':4, 'outersize':13, 'outeramplitude':-1, 'label':''},
+                        #  {'period':1/3, 'amplitude':1, 'stimtype':'wireframes', 'innersize':4, 'inneramplitude':4, 'outersize':13, 'outeramplitude':-2, 'label':''},
+                        #  {'period':1/3, 'amplitude':1, 'stimtype':'wireframes', 'innersize':4, 'inneramplitude':4, 'outersize':13, 'outeramplitude':-3, 'label':''},
+                        #  {'period':1/3, 'amplitude':1, 'stimtype':'wireframes', 'innersize':4, 'inneramplitude':4, 'outersize':13, 'outeramplitude':-4, 'label':''},
 
-                         {'period':1/3, 'amplitude':1, 'stimtype':'wireframes', 'innersize':4, 'inneramplitude':3, 'outersize':13, 'outeramplitude':4, 'label':''},
-                         {'period':1/3, 'amplitude':1, 'stimtype':'wireframes', 'innersize':4, 'inneramplitude':2, 'outersize':13, 'outeramplitude':4, 'label':''},
-                         {'period':1/3, 'amplitude':1, 'stimtype':'wireframes', 'innersize':4, 'inneramplitude':1, 'outersize':13, 'outeramplitude':4, 'label':''},
-                         {'period':1/3, 'amplitude':1, 'stimtype':'wireframes', 'innersize':4, 'inneramplitude':0, 'outersize':13, 'outeramplitude':4, 'label':''},
-                         {'period':1/3, 'amplitude':1, 'stimtype':'wireframes', 'innersize':4, 'inneramplitude':-1, 'outersize':13, 'outeramplitude':4, 'label':''},
-                         {'period':1/3, 'amplitude':1, 'stimtype':'wireframes', 'innersize':4, 'inneramplitude':-2, 'outersize':13, 'outeramplitude':4, 'label':''},
-                         {'period':1/3, 'amplitude':1, 'stimtype':'wireframes', 'innersize':4, 'inneramplitude':-3, 'outersize':13, 'outeramplitude':4, 'label':''},
-                         {'period':1/3, 'amplitude':1, 'stimtype':'wireframes', 'innersize':4, 'inneramplitude':-4, 'outersize':13, 'outeramplitude':4, 'label':''},
+                         {'period':1/3, 'amplitude':1, 'stimtype':'wireframes', 'innersize':4, 'inneramplitude':4, 'outersize':13, 'outeramplitude':8/3, 'label':''},
+                         {'period':1/3, 'amplitude':1, 'stimtype':'wireframes', 'innersize':4, 'inneramplitude':4, 'outersize':13, 'outeramplitude':4/3, 'label':''},
+                         {'period':1/3, 'amplitude':1, 'stimtype':'wireframes', 'innersize':4, 'inneramplitude':4, 'outersize':13, 'outeramplitude':0,   'label':''},
+                         {'period':1/3, 'amplitude':1, 'stimtype':'wireframes', 'innersize':4, 'inneramplitude':4, 'outersize':13, 'outeramplitude':-4/3,'label':''},
+                         {'period':1/3, 'amplitude':1, 'stimtype':'wireframes', 'innersize':4, 'inneramplitude':4, 'outersize':13, 'outeramplitude':-8/3,'label':''},
+                         {'period':1/3, 'amplitude':1, 'stimtype':'wireframes', 'innersize':4, 'inneramplitude':4, 'outersize':13, 'outeramplitude':-4,  'label':''},
+                        
+
+                        #  {'period':1/3, 'amplitude':1, 'stimtype':'wireframes', 'innersize':4, 'inneramplitude':3, 'outersize':13, 'outeramplitude':4, 'label':''},
+                        #  {'period':1/3, 'amplitude':1, 'stimtype':'wireframes', 'innersize':4, 'inneramplitude':2, 'outersize':13, 'outeramplitude':4, 'label':''},
+                        #  {'period':1/3, 'amplitude':1, 'stimtype':'wireframes', 'innersize':4, 'inneramplitude':1, 'outersize':13, 'outeramplitude':4, 'label':''},
+                        #  {'period':1/3, 'amplitude':1, 'stimtype':'wireframes', 'innersize':4, 'inneramplitude':0, 'outersize':13, 'outeramplitude':4, 'label':''},
+                        #  {'period':1/3, 'amplitude':1, 'stimtype':'wireframes', 'innersize':4, 'inneramplitude':-1, 'outersize':13, 'outeramplitude':4, 'label':''},
+                        #  {'period':1/3, 'amplitude':1, 'stimtype':'wireframes', 'innersize':4, 'inneramplitude':-2, 'outersize':13, 'outeramplitude':4, 'label':''},
+                        #  {'period':1/3, 'amplitude':1, 'stimtype':'wireframes', 'innersize':4, 'inneramplitude':-3, 'outersize':13, 'outeramplitude':4, 'label':''},
+                        #  {'period':1/3, 'amplitude':1, 'stimtype':'wireframes', 'innersize':4, 'inneramplitude':-4, 'outersize':13, 'outeramplitude':4, 'label':''},
+
+                         {'period':1/3, 'amplitude':1, 'stimtype':'wireframes', 'innersize':4, 'inneramplitude':8/3, 'outersize':13, 'outeramplitude':4, 'label':''},
+                         {'period':1/3, 'amplitude':1, 'stimtype':'wireframes', 'innersize':4, 'inneramplitude':4/3, 'outersize':13, 'outeramplitude':4, 'label':''},
+                         {'period':1/3, 'amplitude':1, 'stimtype':'wireframes', 'innersize':4, 'inneramplitude':0,   'outersize':13, 'outeramplitude':4, 'label':''},
+                         {'period':1/3, 'amplitude':1, 'stimtype':'wireframes', 'innersize':4, 'inneramplitude':-4/3,'outersize':13, 'outeramplitude':4, 'label':''},
+                         {'period':1/3, 'amplitude':1, 'stimtype':'wireframes', 'innersize':4, 'inneramplitude':-8/3,'outersize':13, 'outeramplitude':4, 'label':''},
+                         {'period':1/3, 'amplitude':1, 'stimtype':'wireframes', 'innersize':4, 'inneramplitude':-4,  'outersize':13, 'outeramplitude':4, 'label':''},
 
                          {'period':1/3, 'amplitude':1, 'stimtype':'wireframes', 'innersize':4, 'inneramplitude':4, 'outersize':None, 'outeramplitude':None, 'label':''},
                          {'period':1/3, 'amplitude':1, 'stimtype':'wireframes', 'innersize':4, 'inneramplitude':3, 'outersize':None, 'outeramplitude':None, 'label':''},
@@ -597,7 +612,7 @@ def getTasks(cfg):
 
                          ]
 
-        return( dictToBlockTrials(cfg=cfg, condictionary=condictionary, nblocks=1, nrepetitions=3, shuffle=True) )
+        return( dictToBlockTrials(cfg=cfg, condictionary=condictionary, nblocks=1, nrepetitions=2, shuffle=True) )
         # return( dictToBlockTrials(cfg=cfg, condictionary=condictionary, nblocks=1, nrepetitions=1, shuffle=False) )
 
 
